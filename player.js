@@ -1,4 +1,11 @@
-import { Sitting, Running, Jumping, Falling } from "./playerState.js";
+import {
+  Sitting,
+  Running,
+  Jumping,
+  Falling,
+  Rolling,
+  Diving,
+} from "./playerState.js";
 
 export class Player {
   // 초기화 생성자
@@ -27,15 +34,16 @@ export class Player {
     // state 관리 (sitting, running,)
     // plaeyr을 props로 넘기기
     this.states = [
-      new Sitting(this),
-      new Running(this),
-      new Jumping(this),
-      new Falling(this),
+      new Sitting(this.game),
+      new Running(this.game),
+      new Jumping(this.game),
+      new Falling(this.game),
+      new Rolling(this.game),
+      new Diving(this.game),
     ];
-    this.currentState = this.states[0];
-    this.currentState.enter();
   }
   update(input, deltaTime) {
+    this.checkCollision();
     this.currentState.handleInput(input);
 
     // horizontal movement
@@ -43,6 +51,7 @@ export class Player {
     if (input.includes("ArrowRight")) this.speed = this.maxSpeed;
     else if (input.includes("ArrowLeft")) this.speed = -this.maxSpeed;
     else this.speed = 0;
+    // horizontal movement
     if (this.x < 0) this.x = 0;
     if (this.x > this.game.width - this.width)
       this.x = this.game.width - this.width;
@@ -61,6 +70,8 @@ export class Player {
     }
   }
   draw(context) {
+    if (this.game.debug)
+      context.strokeRect(this.x, this.y, this.width, this.height);
     context.drawImage(
       this.image,
       this.frameX * this.width,
@@ -82,5 +93,27 @@ export class Player {
     this.currentState = this.states[state];
     this.game.speed = this.game.maxSpeed * speed;
     this.currentState.enter();
+  }
+
+  // 충돌 처리
+  checkCollision() {
+    this.game.enemies.forEach((enemy) => {
+      if (
+        // 적의 x축 좌측상단이 플레이어 우측상단과 겹쳤을 때
+        enemy.x < this.x + this.width &&
+        // 적의 x축 우측상단 좌표가 플레이어 좌측상단과 겹치지 않을때
+        enemy.x + enemy.width > this.x &&
+        // 적의 y축 상단이 플레이어의 y축 하단 전까지 겹칠때
+        enemy.y < this.y + this.height &&
+        // 플레이어의 y축 상단이 적의 y축 하단보다 아래있을 때
+        enemy.y + enemy.height > this.y
+      ) {
+        // 충돌된 enemy 개체 없애주기
+        enemy.markedForDeletion = true;
+        this.game.score++;
+      } else {
+        // no collision
+      }
+    });
   }
 }
