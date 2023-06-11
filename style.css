@@ -13,21 +13,14 @@
   max-width: 100%;
 }
 
-#player {
-  display: none;
-}
-#layer1 {
-  display: none;
-}
-#layer2 {
-  display: none;
-}
-#layer3 {
-  display: none;
-}
-#layer4 {
-  display: none;
-}
-#layer5 {
+#player,
+#layer1,
+#layer2,
+#layer3,
+#layer4,
+#layer5,
+#enemy_fly,
+#enemy_plant,
+#enemy_spider {
   display: none;
 }
