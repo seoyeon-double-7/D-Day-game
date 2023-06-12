@@ -19,7 +19,7 @@ class Layer {
     // 두번째 배경 이미지
     context.drawImage(
       this.image,
-      this.x + this.width + 20,
+      this.x + this.width,
       this.y,
       this.width,
       this.height
@@ -29,8 +29,8 @@ class Layer {
 export class Background {
   constructor(game) {
     this.game = game;
-    this.width = 1667;
-    this.height = 500;
+    this.width = 5760;
+    this.height = 1080;
     this.layer1image = document.getElementById("layer1");
     this.layer2image = document.getElementById("layer2");
     this.layer3image = document.getElementById("layer3");
@@ -68,16 +68,16 @@ export class Background {
       this.game,
       this.width,
       this.height,
-      2,
+      1,
       this.layer5image
     );
     // 배경화면 요소 5개 동시에 배경으로 찍어주기
     this.backgroundLayers = [
-      this.layer1,
-      this.layer2,
+      // this.layer1,
+      // this.layer2,
       this.layer3,
-      this.layer4,
-      this.layer5,
+      // this.layer4,
+      // this.layer5,
     ];
   }
   update() {

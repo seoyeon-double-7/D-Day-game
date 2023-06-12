@@ -5,7 +5,10 @@ import {
   Falling,
   Rolling,
   Diving,
+  Hit,
 } from "./playerState.js";
+import { CollisionAnimation } from "./CollisionAnimation.js";
+import { FloatingMessages } from "./floatingMessages.js";
 
 export class Player {
   // 초기화 생성자
@@ -13,7 +16,7 @@ export class Player {
     this.game = game;
     // 크기
     this.width = 100;
-    this.height = 91.3;
+    this.height = 150;
     // 좌표
     this.x = 0;
     this.y = this.game.height - this.height - this.game.groundMargin;
@@ -31,6 +34,8 @@ export class Player {
     this.speed = 0;
     this.maxSpeed = 10;
 
+    this.collisionElement = "";
+
     // state 관리 (sitting, running,)
     // plaeyr을 props로 넘기기
     this.states = [
@@ -40,7 +45,9 @@ export class Player {
       new Falling(this.game),
       new Rolling(this.game),
       new Diving(this.game),
+      new Hit(this.game),
     ];
+    this.currentState = null;
   }
   update(input, deltaTime) {
     this.checkCollision();
@@ -48,19 +55,29 @@ export class Player {
 
     // horizontal movement
     this.x += this.speed;
-    if (input.includes("ArrowRight")) this.speed = this.maxSpeed;
-    else if (input.includes("ArrowLeft")) this.speed = -this.maxSpeed;
+    if (input.includes("ArrowRight") && this.currentState !== this.states[6])
+      this.speed = this.maxSpeed;
+    else if (
+      input.includes("ArrowLeft") &&
+      this.currentState !== this.states[6]
+    )
+      this.speed = -this.maxSpeed;
     else this.speed = 0;
-    // horizontal movement
+    // horizontal boundaries
     if (this.x < 0) this.x = 0;
     if (this.x > this.game.width - this.width)
       this.x = this.game.width - this.width;
 
-    // vertical move
+    // vertical movement
     this.y += this.vy;
     if (!this.onGround()) this.vy += this.weight;
     else this.vy = 0;
 
+    // vertical boundaries
+    if (this.y > this.game.height - this.height - this.game.groundMargin)
+      this.y = this.game.height - this.height - this.game.groundMargin;
+
+    // sprite animation
     if (this.frameTimer > this.frameInterval) {
       this.frameTimer = 0;
       if (this.frameX < this.maxFrame) this.frameX++;
@@ -110,9 +127,36 @@ export class Player {
       ) {
         // 충돌된 enemy 개체 없애주기
         enemy.markedForDeletion = true;
-        this.game.score++;
-      } else {
-        // no collision
+
+        if (!enemy.isEnemy) {
+          this.collisionElement = "coin";
+        } else {
+          this.collisionElement = "obstacle";
+        }
+
+        this.game.collisions.push(
+          new CollisionAnimation(
+            this.game,
+            enemy.x + enemy.width * 0.5,
+            enemy.y + enemy.height * 0.5
+          )
+        );
+
+        if (
+          !enemy.isEnemy ||
+          this.currentState === this.states[4] ||
+          this.currentState === this.states[5]
+        ) {
+          this.game.score++;
+          this.game.floatingMessages.push(
+            new FloatingMessages("+1", enemy.x, enemy.y, 150, 50)
+          );
+        } else {
+          this.setState(6, 0);
+          this.game.score -= 5;
+          this.game.lives--;
+          if (this.game.lives <= 0) this.game.gameOver = true;
+        }
       }
     });
   }

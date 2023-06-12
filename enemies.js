@@ -5,6 +5,7 @@ class Enemy {
     this.fps = 20;
     this.frameInterval = 1000 / this.fps;
     this.frameTimer = 0;
+    this.isEnemy = true;
     this.markedForDeletion = false;
   }
   update(deltaTime) {
@@ -45,13 +46,13 @@ export class FlyingEnemy extends Enemy {
     // 부모 클래스 변수, 함수 사용가능
     super();
     this.game = game;
-    this.width = 60;
-    this.height = 44;
+    this.width = 91;
+    this.height = 232;
     this.x = this.game.width;
-    this.y = Math.random() * this.game.height * 0.5;
-    this.speedX = Math.random() + 1;
+    this.y = Math.random() * this.game.height * 0.8;
+    this.speedX = 0;
     this.speedY = 0;
-    this.maxFrame = 5;
+    this.maxFrame = 0;
     this.image = document.getElementById("enemy_fly");
     this.angle = 0;
     this.va = Math.random() * 0.1 + 0.1;
@@ -66,28 +67,29 @@ export class GroundEnemy extends Enemy {
   constructor(game) {
     super();
     this.game = game;
-    this.width = 60;
-    this.height = 87;
+    this.width = 41;
+    this.height = 60;
     this.x = this.game.width;
     this.y = this.game.height - this.height - this.game.groundMargin;
     this.image = document.getElementById("enemy_plant");
     this.speedX = 0;
     this.speedY = 0;
-    this.maxFrame = 1;
+    this.isEnemy = false;
+    this.maxFrame = 0;
   }
 }
 export class ClimbingEnemy extends Enemy {
   constructor(game) {
     super();
     this.game = game;
-    this.width = 120;
-    this.height = 144;
+    this.width = 91;
+    this.height = 232;
     this.x = this.game.width;
     this.y = Math.random() * this.game.height * 0.5;
     this.image = document.getElementById("enemy_spider");
     this.speedX = 0;
     this.speedY = Math.random() > 0.5 ? 1 : -1;
-    this.maxFrame = 5;
+    this.maxFrame = 0;
   }
   update(deltaTime) {
     super.update(deltaTime);
@@ -96,9 +98,9 @@ export class ClimbingEnemy extends Enemy {
   }
   draw(context) {
     super.draw(context);
-    context.beginPath();
-    context.moveTo(this.x + this.width / 2, 0);
-    context.lineTo(this.x + this.width / 2, this.y + 50);
-    context.stroke();
+    // context.beginPath();
+    // context.moveTo(this.x + this.width / 2, 0);
+    // context.lineTo(this.x + this.width / 2, this.y + 10);
+    // context.stroke();
   }
 }

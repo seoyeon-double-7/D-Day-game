@@ -2,15 +2,16 @@
   margin: 0;
   pad: 0;
   box-sizing: border-box;
+  /* color: #c1e6c9; */
 }
 
 #canvas1 {
-  border: 5px solid black;
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate((-50%, -50%));
+  top: 0%;
+  left: 0%;
+  transform: translate((0%, 0%));
   max-width: 100%;
+  /* font-family: ; */
 }
 
 #player,
@@ -22,6 +23,9 @@
 #enemy_fly,
 #enemy_plant,
 #enemy_spider,
-#fire {
+#fire,
+#collisionAnimation,
+#shineAnimation,
+#lives {
   display: none;
 }
