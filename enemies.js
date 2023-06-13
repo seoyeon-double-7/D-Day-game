@@ -10,6 +10,14 @@ class Enemy {
   }
   update(deltaTime) {
     // movement
+    // console.log(
+    //   "this.x : ",
+    //   this.x,
+    //   "this.speedX",
+    //   this.speedX,
+    //   "this.game.speed",
+    //   this.game.speed
+    // );
     this.x -= this.speedX + this.game.speed;
     this.y += this.speedY;
     if (this.frameTimer > this.frameInterval) {
@@ -49,7 +57,7 @@ export class FlyingEnemy extends Enemy {
     this.width = 91;
     this.height = 232;
     this.x = this.game.width;
-    this.y = Math.random() * this.game.height * 0.8;
+    this.y = Math.random() * this.game.height * 0.3 + this.game.player.width;
     this.speedX = 0;
     this.speedY = 0;
     this.maxFrame = 0;
@@ -84,7 +92,7 @@ export class ClimbingEnemy extends Enemy {
     this.game = game;
     this.width = 91;
     this.height = 232;
-    this.x = this.game.width;
+    this.x = this.game.width + 180;
     this.y = Math.random() * this.game.height * 0.5;
     this.image = document.getElementById("enemy_spider");
     this.speedX = 0;

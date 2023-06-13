@@ -2,7 +2,12 @@ import { Player } from "./player.js";
 import { InputHandler } from "./input.js";
 import { Background } from "./background.js";
 import { FlyingEnemy, GroundEnemy, ClimbingEnemy } from "./enemies.js";
+import { Field1 } from "./field.js";
 import { UI } from "./UI.js";
+
+function nextStage() {
+  alert("next!");
+}
 
 window.addEventListener("load", function () {
   const canvas = document.getElementById("canvas1");
@@ -10,11 +15,13 @@ window.addEventListener("load", function () {
   canvas.width = 1920;
   canvas.height = 1080;
 
+  this.document.getElementById("next").onclick = nextStage;
+
   class Game {
     constructor(width, height) {
       this.width = width;
       this.height = height;
-      this.groundMargin = 40;
+      this.groundMargin = 260;
       this.speed = 0;
       this.maxSpeed = 6;
 
@@ -26,12 +33,15 @@ window.addEventListener("load", function () {
 
       // 적
       this.enemies = [];
+      this.fields = [];
       this.particles = [];
       this.collisions = [];
       this.floatingMessages = [];
       this.maxParticles = 200;
       this.enemyTimer = 0;
-      this.enemyInterval = 1000;
+      this.enemyInterval = 2500;
+      this.filedTimer = 0;
+      this.filedInterval = 1000;
       this.debug = false;
 
       // 점수
@@ -44,7 +54,11 @@ window.addEventListener("load", function () {
       // 1000 1초
       this.maxTime = 60000;
       this.gameOver = false;
+      this.gameClear = false;
       this.lives = 5;
+
+      // 다음 스테이지
+      this.nextStage = false;
 
       this.player.currentState = this.player.states[0];
       this.player.currentState.enter();
@@ -52,6 +66,14 @@ window.addEventListener("load", function () {
     update(deltaTime) {
       this.time += deltaTime;
       if (this.time > this.maxTime) this.gameOver = true;
+      if (game.background.backgroundLayers[0].bgNum >= 2) {
+        if (game.player.x >= this.width - 500) {
+          this.gameClear = true;
+        } else {
+          this.gameOver = true;
+        }
+      }
+
       this.background.update();
       this.player.update(this.input.keys, deltaTime);
       // handleEnemies
@@ -66,6 +88,21 @@ window.addEventListener("load", function () {
         if (enemy.markedForDeletion)
           this.enemies.splice(this.enemies.indexOf(enemy), 1);
       });
+
+      // handle fields
+      if (this.filedTimer > this.filedInterval) {
+        this.fields.push(new Field1(this));
+        this.filedTimer = 0;
+      } else {
+        this.filedTimer += deltaTime;
+      }
+
+      this.fields.forEach((field) => {
+        field.update(deltaTime);
+        if (field.markedForDeletion)
+          this.fields.splice(this.fields.indexOf(field), 1);
+      });
+
       // handle messages
       this.floatingMessages.forEach((message) => {
         message.update();
@@ -85,7 +122,9 @@ window.addEventListener("load", function () {
         collision.update(deltaTime);
         if (collision.markedForDeletion) this.collisions.splice(index, 1);
       });
+
       this.enemies = this.enemies.filter((enemy) => !enemy.markedForDeletion);
+      this.fields = this.fields.filter((field) => !field.markedForDeletion);
       this.particles = this.particles.filter(
         (particle) => !particle.markedForDeletion
       );
@@ -102,6 +141,9 @@ window.addEventListener("load", function () {
       this.player.draw(context);
       this.enemies.forEach((enemy) => {
         enemy.draw(context);
+      });
+      this.fields.forEach((field) => {
+        field.draw(context);
       });
       this.particles.forEach((particle) => {
         particle.draw(context);
@@ -130,9 +172,10 @@ window.addEventListener("load", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.update(deltaTime);
     game.draw(ctx);
-    // if (!game.gameOver) 
-    console.log(game.background.backgroundLayers[0].bgNum)
-    requestAnimationFrame(animate);
+    if (!game.gameOver && !game.gameClear && !game.nextStage) {
+      // console.log(game.background.backgroundLayers[0].bgNum)
+      requestAnimationFrame(animate);
+    }
   }
   //   캐릭터 그리기
   animate(0);

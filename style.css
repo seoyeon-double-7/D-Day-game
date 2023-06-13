@@ -15,17 +15,15 @@
 }
 
 #player,
-#layer1,
-#layer2,
 #layer3,
-#layer4,
-#layer5,
 #enemy_fly,
 #enemy_plant,
 #enemy_spider,
 #fire,
 #collisionAnimation,
 #shineAnimation,
-#lives {
+#lives,
+#next,
+#field1 {
   display: none;
 }

@@ -147,7 +147,7 @@ export class Player {
           this.currentState === this.states[4] ||
           this.currentState === this.states[5]
         ) {
-          this.game.score++;
+          this.game.score += 135;
           this.game.floatingMessages.push(
             new FloatingMessages("+1", enemy.x, enemy.y, 150, 50)
           );
