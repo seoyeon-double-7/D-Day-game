@@ -41,7 +41,8 @@ window.addEventListener("load", function () {
 
       // 제한시간
       this.time = 0;
-      this.maxTime = 30000;
+      // 1000 1초
+      this.maxTime = 60000;
       this.gameOver = false;
       this.lives = 5;
 
@@ -129,7 +130,9 @@ window.addEventListener("load", function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     game.update(deltaTime);
     game.draw(ctx);
-    if (!game.gameOver) requestAnimationFrame(animate);
+    // if (!game.gameOver) 
+    console.log(game.background.backgroundLayers[0].bgNum)
+    requestAnimationFrame(animate);
   }
   //   캐릭터 그리기
   animate(0);

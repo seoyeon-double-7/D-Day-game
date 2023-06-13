@@ -3,7 +3,7 @@ export class CollisionAnimation {
     this.game = game;
     this.image1 = document.getElementById("collisionAnimation");
     this.image2 = document.getElementById("shineAnimation");
-    this.spriteWidth = 90;
+    this.spriteWidth = 100;
     this.spriteHeight = 90;
     this.sizeModifier = Math.random() + 0.5;
     this.width = this.spriteWidth * this.sizeModifier;
@@ -33,7 +33,6 @@ export class CollisionAnimation {
     );
   }
   update(deltaTime) {
-    console.log(this.game.player);
     this.x -= this.game.speed;
     if (this.framTimer > this.frameInterval) {
       this.frameX++;

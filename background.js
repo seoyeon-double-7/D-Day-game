@@ -3,14 +3,25 @@ class Layer {
     this.game = game;
     this.width = width;
     this.height = height;
+    this.frSize = this.game.width*2;
     this.speedModifier = speedModifier;
     this.image = image;
+    this.bgNum = 1;
     this.x = 0;
     this.y = 0;
   }
   update() {
-    if (this.x < -this.width) this.x = 0;
-    else this.x -= this.game.speed * this.speedModifier;
+    // 
+    if(this.x.toFixed(0) == -this.frSize){
+      this.bgNum++;
+      console.log("bgNum",this.bgNum)
+    }
+      if (this.x < -this.width) {
+        this.x = 0; 
+      }
+      else this.x -= this.game.speed * this.speedModifier;
+    
+    
   }
 
   draw(context) {
@@ -31,6 +42,7 @@ export class Background {
     this.game = game;
     this.width = 5760;
     this.height = 1080;
+
     this.layer1image = document.getElementById("layer1");
     this.layer2image = document.getElementById("layer2");
     this.layer3image = document.getElementById("layer3");
