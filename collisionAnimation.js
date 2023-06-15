@@ -1,6 +1,8 @@
 export class CollisionAnimation {
+  // 충돌 기본 세팅
   constructor(game, x, y) {
     this.game = game;
+    // 장애물 충돌 이미지, 코인 충돌 이미지
     this.image1 = document.getElementById("collisionAnimation");
     this.image2 = document.getElementById("shineAnimation");
     this.spriteWidth = 100;
@@ -17,8 +19,10 @@ export class CollisionAnimation {
     this.frameInterval = 1000 / this.fps;
     this.framTimer = 0;
   }
+  // CollisionAnimation draw
   draw(context) {
     context.drawImage(
+      // 플레이어가 충돌하는 개체에 따라서 이미지 바꿔주기
       this.game.player.collisionElement === "obstacle"
         ? this.image1
         : this.image2,
@@ -34,6 +38,7 @@ export class CollisionAnimation {
   }
   update(deltaTime) {
     this.x -= this.game.speed;
+    // 프레임 바꿔주기
     if (this.framTimer > this.frameInterval) {
       this.frameX++;
       this.framTimer = 0;

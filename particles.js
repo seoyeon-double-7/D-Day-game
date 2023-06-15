@@ -11,6 +11,7 @@ class Particle {
   }
 }
 
+// 캐릭터 이동할때 캐릭터 하단 먼지 이벤트
 export class Dust extends Particle {
   constructor(game, x, y) {
     super(game);

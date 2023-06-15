@@ -9,19 +9,22 @@ export class UI {
   }
   draw(context) {
     context.save();
+
+    // ctx  설정
     context.shadowOffsetX = 2;
     context.shadowOffsetY = 2;
     context.shadowColor = "white";
     context.shadowBlur = 0;
-
     context.font = this.fontSize + "px " + this.fontFamily;
     // context.font = this.fontSize * 2 + "px " + this.fontFamily;
     context.textAlign = "left";
     context.fillStyle = this.game.fontColor;
-    // score
+
+    // 점수 그려주기
     context.fillText("점수: " + this.game.score, 40, 100);
 
-    // timer
+    // 남은시간 그려주기
+    // TODO : 남은 시간 계산해서 timer bar로 변경
 
     context.fillText(
       "남은시간 : " +
@@ -30,14 +33,14 @@ export class UI {
       100
     );
 
-    // lives
+    // 생명 그려주기
     for (let i = 0; i < this.game.lives; i++) {
       context.drawImage(this.livesImage, 45 * i + 500, 70, 45, 45);
     }
 
     context.textAlign = "center";
 
-    // 게임 클리어
+    // 게임 클리어했을 때
     if (this.game.gameClear) {
       // 간단한 시나리오 넣어주기
 
@@ -74,7 +77,7 @@ export class UI {
       );
     }
 
-    // 게임 오버
+    // 게임 오버했을 때
     else if (this.game.gameOver) {
       context.font = this.fontSize * 2 + "px " + this.fontFamily;
       context.fillText(

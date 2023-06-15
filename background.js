@@ -1,4 +1,5 @@
 class Layer {
+  // 기본 세팅
   constructor(game, width, height, speedModifier, image) {
     this.game = game;
     this.width = width;
@@ -11,16 +12,18 @@ class Layer {
     this.y = 0;
   }
   update() {
-    //
+    // 1920 맵 하나 넘어갈때 bgNum 1씩 증가시켜주기
     if (this.x.toFixed(0) == -this.frSize) {
       this.bgNum++;
-      // console.log("bgNum",this.bgNum)
     }
+
+    // 전체 배경 하나가 넘어갈때 x좌표 0으로 세팅(배경 이여붙여주기 위함)
     if (this.x < -this.width) {
       this.x = 0;
     } else this.x -= this.game.speed * this.speedModifier;
   }
 
+  //  레이어 draw(기본)
   draw(context) {
     // 첫번째 배경 이미지
     context.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -34,7 +37,9 @@ class Layer {
     );
   }
 }
+
 export class Background {
+  // 배경 세팅
   constructor(game) {
     this.game = game;
     this.width = 5760;

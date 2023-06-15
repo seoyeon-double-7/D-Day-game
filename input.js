@@ -13,7 +13,9 @@ export class InputHandler {
         this.keys.indexOf(e.key) === -1
       ) {
         this.keys.push(e.key);
-      } else if (e.key === "d") {
+      }
+      // 디버그 모드
+      else if (e.key === "d") {
         this.game.debug = !this.game.debug;
       }
     });
