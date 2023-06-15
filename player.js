@@ -85,12 +85,13 @@ export class Player {
     // y값 세팅
     this.y += this.vy;
     if (!this.onGround()) this.vy += this.weight;
-    else this.vy = 0;
 
     // 점프중x 바닥에 있을때 y값 세팅
-    if (this.onGround())
+    if (this.onGround()) {
       this.y = this.game.height - this.height - this.game.groundMargin;
-
+      this.vy = 0;
+      this.onPlatform = false;
+    }
     // 캐릭터 sprite 애니메이션
     // frameX값을 추가해서 다음 캐릭터 모션을 읽어와서 draw
     if (this.frameTimer > this.frameInterval) {
@@ -122,7 +123,7 @@ export class Player {
     );
   }
 
-  // 바닥에 있는지 체크
+  // 바닥과 충돌 체크
   onGround() {
     return this.y >= this.game.height - this.height - this.game.groundMargin;
   }

@@ -11,12 +11,23 @@ class Field {
     // movement
     this.x -= this.speedX + this.game.speed;
     this.y += this.speedY;
-
     // TODO : 플레이어, 발판 충돌 체크
-    // if()
-
-    // check it off screen
-    if (this.x + this.width < 0) this.markedForDeletion = true;
+    if (
+      this.game.player.x < this.x + this.width &&
+      this.game.player.x + this.game.player.width > this.x &&
+      this.game.player.y + this.game.player.height > this.y &&
+      this.game.player.y + this.game.player.height < this.y + this.height &&
+      this.game.player.vy >= 0
+    ) {
+      this.game.player.y = this.y - this.game.player.height;
+      this.game.player.vy = 0;
+      this.game.player.onPlatform = true;
+    } else {
+      this.game.player.onPlatform = false;
+    }
+    if (this.x + this.width < 0)
+      // check it off screen
+      this.markedForDeletion = true;
   }
   draw(context) {
     if (this.game.debug)
@@ -42,10 +53,17 @@ export class Field1 extends Field {
     this.game = game;
     this.width = 141;
     this.height = 53;
+    // this.platforms=[
+    //   {x:0,y:350},
+    //   {x:200,y:250},
+    //   {x:400,y:150},
+    //   {x:600,y:250},
+    //   {x:800,y:150},
+    // ]
 
     // 발판 최대 최소 높이
     this.minY = this.game.height - this.game.groundMargin;
-    this.maxY = this.minY - this.height;
+    this.maxY = this.minY - 300;
 
     this.x = this.game.width;
     this.y = Math.random() * (this.maxY - this.minY) + this.minY;

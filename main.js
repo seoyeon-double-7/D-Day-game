@@ -46,7 +46,7 @@ window.addEventListener("load", function () {
       // 발판 세팅
       this.platformGap = 300;
       this.platformTimer = 0;
-      this.platformInterval = 2000;
+      this.platformInterval = 1000;
       this.debug = false;
 
       // 점수
@@ -72,6 +72,7 @@ window.addEventListener("load", function () {
 
     // 게임 update
     update(deltaTime) {
+      // console.log(game.player.currentState);
       // time setting
       this.time += deltaTime;
 
@@ -182,7 +183,6 @@ window.addEventListener("load", function () {
 
     // 장애물 추가
     addEnemy() {
-      console.log(Math.random());
       // TODO : addCoin 메소드 따로 만들기
       if (this.speed > 0 && Math.random() < 0.8)
         this.enemies.push(new Coin(this));
