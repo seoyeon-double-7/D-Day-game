@@ -44,20 +44,24 @@ window.addEventListener("load", function () {
       this.enemyInterval = 4000;
 
       // 발판 세팅
-      this.platformGap = 300;
+      this.platformGap = 400;
       this.platformTimer = 0;
       this.platformInterval = 1000;
+      this.initialPlatformX = this.player.x + this.player.width;
+      // this.platforms.push(new Field1(this, initialPlatformX));
+
       this.debug = false;
 
       // 점수
       this.score = 0;
       this.winningScore = 40;
       this.fontColor = "black";
+      this.winningMap = 3;
 
       // 제한시간
       // 1000 1초
       this.time = 0;
-      this.maxTime = 60000;
+      this.maxTime = 80000;
       this.gameOver = false;
       this.gameClear = false;
       this.lives = 5;
@@ -86,7 +90,7 @@ window.addEventListener("load", function () {
       if (this.time > this.maxTime) this.gameOver = true;
 
       // 맵이 끝났을 때 캐릭터가 도착 지점에 있으면 게임 클리어
-      if (game.background.backgroundLayers[0].bgNum >= 2) {
+      if (game.background.backgroundLayers[0].bgNum >= this.winningMap) {
         if (game.player.x >= this.width - 500) {
           this.gameClear = true;
         } else {
@@ -197,9 +201,23 @@ window.addEventListener("load", function () {
     }
 
     // 발판 추가
-    // TODO: main말고, filed class update메소드에서 for문 돌리며 random하게 출력하기
     addPlatform() {
-      this.platforms.push(new Field1(this));
+      const platformCount = Math.floor(Math.random() * 8) + 1; // 1개에서 4개 사이의 발판 개수 랜덤 설정
+      // 마지막으로 생성된 발판 할당(23.06.19)
+      let lastPlatform =
+        this.platforms.length > 0
+          ? this.platforms[this.platforms.length - 1]
+          : // 초기값으로 null을 설정하고, 발판이 최소한 한 개 이상 생성되었는지 확인한 후에 값을 할당
+            // lastPlatform.x를 참조하기 전에 오류를 방지
+            null;
+
+      for (let i = 0; i < platformCount; i++) {
+        const x = lastPlatform
+          ? lastPlatform.x + this.platformGap
+          : this.initialPlatformX; // 마지막으로 생성된 발판의 x 좌표 뒤에 새로운 발판 생성 또는 초기값으로 설정
+        this.platforms.push(new Field1(this, x));
+        lastPlatform = this.platforms[this.platforms.length - 1]; // 업데이트된 마지막 발판
+      }
     }
   }
 

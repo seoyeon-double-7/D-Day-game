@@ -62,8 +62,12 @@ export class FlyingEnemy extends Enemy {
     this.width = 91;
     this.height = 232;
     this.x = this.game.width;
+
+    this.minY = this.game.height - this.game.groundMargin;
+    this.maxY = this.minY - 40;
+    this.y = Math.random() * (this.maxY - this.minY) + this.maxY / 2;
     // y random하게
-    this.y = Math.random() * this.game.height * 0.3 + this.game.player.width;
+    // this.y = Math.random() * this.game.height * 0.3 + this.game.player.width;
     this.speedX = 0;
     this.speedY = 0;
     this.maxFrame = 0;

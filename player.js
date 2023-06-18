@@ -109,7 +109,6 @@ export class Player {
     // debug모드
     if (this.game.debug)
       context.strokeRect(this.x, this.y, this.width, this.height);
-
     // frameX, frameY로 gif 효과
     context.drawImage(
       this.image,
