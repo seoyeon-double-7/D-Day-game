@@ -70,6 +70,7 @@ export class Running extends State {
     }
     // 업키 눌렀을 때 jumping state로 바꿔주기
     else if (input.includes("ArrowUp")) {
+      // console.log("running에서 jumping으로");
       this.game.player.setState(states.JUMPING, 1);
     }
     // 엔터 눌렀을 때 rolling state로 바꿔주기
@@ -86,15 +87,22 @@ export class Jumping extends State {
     super("JUMPING", game);
   }
   enter() {
+    this.game.player.onPlatform = true;
+    console.log(this.game.player.onPlatform);
     // 프레임 세팅
-    if (this.game.player.onGround()) this.game.player.vy -= 27;
+    if (this.game.player.onGround() || this.game.player.onPlatform) {
+      // console.log("-27한다잉");
+      this.game.player.vy -= 27;
+    }
     this.game.player.frameX = 0;
     this.game.player.maxFrame = 5;
     this.game.player.frameY = 2;
   }
   handleInput(input) {
     // 착지 이벤트
+    // vy가 1보다클때 착지 이벤트 실행
     if (this.game.player.vy > this.game.player.weight) {
+      // console.log("착지 이벤트");
       this.game.player.setState(states.FALLING, 1);
     }
     // 엔터 눌렀을때 roling state(무적)
@@ -114,15 +122,17 @@ export class Falling extends State {
     super("FALLING", game);
   }
   enter() {
-    if (this.game.player.onGround()) this.game.player.vy -= 30;
+    if (this.game.player.onGround() || this.game.player.onPlatform)
+      this.game.player.vy -= 30;
     // 프레임 세팅
     this.game.player.frameX = 0;
     this.game.player.maxFrame = 5;
     this.game.player.frameY = 3;
   }
   handleInput(input) {
-    // 착지해서 캐릭터가 땅에 닿아있으면 running state로 세팅
-    if (this.game.player.onGround()) {
+    // console.log("착지");
+    // 캐릭터가 땅 혹은 발판 위에 착지하면 running state로 세팅
+    if (this.game.player.onGround() || this.game.player.onPlatform) {
       this.game.player.setState(states.RUNNING, 1);
     }
     // 다운키 누르면 diving state로 세팅
@@ -153,17 +163,30 @@ export class Rolling extends State {
       )
     );
 
-    if (!input.includes("Enter") && this.game.player.onGround()) {
+    // 엔터 안누르고 바닥이나 발판에 있으면 Running state로
+    if (
+      !input.includes("Enter") &&
+      (this.game.player.onGround() || this.game.player.onPlatform)
+    ) {
       this.game.player.setState(states.RUNNING, 1);
-    } else if (!input.includes("Enter") && !this.game.player.onGround()) {
+    }
+    // 엔터 안누르고 바닥이나 발판에 없으면 FALLING state로
+    else if (
+      !input.includes("Enter") &&
+      (!this.game.player.onGround() || !this.game.player.onPlatform)
+    ) {
       this.game.player.setState(states.FALLING, 1);
-    } else if (
+    }
+    // 엔터, 업키 누르고 바닥이나 발판에 있으면 vy -=27
+    else if (
       input.includes("Enter") &&
       input.includes("ArrowUp") &&
-      this.game.player.onGround()
+      (this.game.player.onGround() || this.game.player.onPlatform)
     ) {
       this.game.player.vy -= 27;
-    } else if (input.includes("ArrowDown") && !this.game.player.onGround()) {
+    }
+    //
+    else if (input.includes("ArrowDown") && !this.game.player.onGround()) {
       this.game.player.setState(states.DIVING, 0);
     }
   }
@@ -190,7 +213,7 @@ export class Diving extends State {
       )
     );
 
-    if (this.game.player.onGround()) {
+    if (this.game.player.onGround() || this.game.player.onPlatform) {
       this.game.player.setState(states.RUNNING, 1);
       for (let i = 0; i < 30; i++) {
         this.game.particles.unshift(
@@ -201,7 +224,11 @@ export class Diving extends State {
           )
         );
       }
-    } else if (input.includes("Enter") && !this.game.player.onGround()) {
+    } else if (
+      input.includes("Enter") &&
+      !this.game.player.onGround() &&
+      !this.game.player.onPlatform
+    ) {
       this.game.player.setState(states.ROLLING, 2);
     }
   }

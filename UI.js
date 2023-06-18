@@ -33,11 +33,18 @@ export class UI {
       100
     );
 
+    context.shadowOffsetX = 10;
+    context.shadowOffsetY = 10;
+    context.shadowColor = "black";
+    context.shadowBlur = 30;
+
     // 생명 그려주기
     for (let i = 0; i < this.game.lives; i++) {
       context.drawImage(this.livesImage, 45 * i + 500, 70, 45, 45);
     }
-
+    context.shadowBlur = 0;
+    context.shadowOffsetX = 0;
+    context.shadowOffsetY = 0;
     context.textAlign = "center";
 
     // 게임 클리어했을 때

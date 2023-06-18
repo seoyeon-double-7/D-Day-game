@@ -25,7 +25,7 @@ export class Player {
     this.vy = 0;
     this.weight = 1;
 
-    // 플레이어 발판위에 있는지
+    // 발판과 플레이어의 충돌 여부를 초기화
     this.onPlatform = false;
 
     // 플레이어 이미지 불러오기 (점프)
@@ -61,12 +61,13 @@ export class Player {
   // 플레이어 update
   update(input, deltaTime) {
     // 충돌 체크
+    this.checkField();
     this.checkCollision();
 
     // 입력 이펙트
     this.currentState.handleInput(input);
 
-    // 입력에 따라서 state 설정해주기
+    // 입력에 따라서 speed 설정해주기
     this.x += this.speed;
     if (input.includes("ArrowRight") && this.currentState !== this.states[6])
       this.speed = this.maxSpeed;
@@ -82,15 +83,15 @@ export class Player {
     if (this.x > this.game.width - this.width)
       this.x = this.game.width - this.width;
 
-    // y값 세팅
+    //  vy값을 변경한 후에 y값을 변경
+    // y값 세팅 => 바닥에 안 닿을때까지 1더해주기
+    if (!this.onGround() && !this.onPlatform) this.vy += this.weight;
     this.y += this.vy;
-    if (!this.onGround()) this.vy += this.weight;
 
     // 점프중x 바닥에 있을때 y값 세팅
     if (this.onGround()) {
       this.y = this.game.height - this.height - this.game.groundMargin;
       this.vy = 0;
-      this.onPlatform = false;
     }
     // 캐릭터 sprite 애니메이션
     // frameX값을 추가해서 다음 캐릭터 모션을 읽어와서 draw
@@ -132,12 +133,38 @@ export class Player {
   setState(state, speed) {
     this.currentState = this.states[state];
     this.game.speed = this.game.maxSpeed * speed;
+    // console.log("state enter");
     this.currentState.enter();
+  }
+
+  checkField() {
+    // console.log(this.currentState);
+    let isOnPlatform = false;
+    this.game.platforms.forEach((platform) => {
+      if (
+        this.x < platform.x + platform.width &&
+        this.x + this.width > platform.x &&
+        this.y + this.height > platform.y &&
+        this.y + this.height <= platform.y + platform.height &&
+        //플레이어가 점프 도중에 발판 위에 있는 경우 vy 값이 음수일 수 있으므로 0에서 -1로 수정
+        this.vy >= -1
+      ) {
+        // 플레이어와 발판과 충돌이 있을 경우에만 값을 변경
+        isOnPlatform = true;
+        this.y = platform.y - this.height;
+        this.vy = 0;
+      }
+      if (platform.x + platform.width < 0)
+        // check it off screen
+        platform.markedForDeletion = true;
+    });
+    this.onPlatform = isOnPlatform;
   }
 
   // 충돌 처리
   checkCollision() {
     this.game.enemies.forEach((enemy) => {
+      // console.log(enemy);
       if (
         // 적의 x축 좌측상단이 플레이어 우측상단과 겹쳤을 때
         enemy.x < this.x + this.width &&

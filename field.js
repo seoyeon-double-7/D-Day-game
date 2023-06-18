@@ -9,25 +9,10 @@ class Field {
   }
   update() {
     // movement
+    // console.log(this.x, this.speedX, this.game.speed);
     this.x -= this.speedX + this.game.speed;
     this.y += this.speedY;
     // TODO : 플레이어, 발판 충돌 체크
-    if (
-      this.game.player.x < this.x + this.width &&
-      this.game.player.x + this.game.player.width > this.x &&
-      this.game.player.y + this.game.player.height > this.y &&
-      this.game.player.y + this.game.player.height < this.y + this.height &&
-      this.game.player.vy >= 0
-    ) {
-      this.game.player.y = this.y - this.game.player.height;
-      this.game.player.vy = 0;
-      this.game.player.onPlatform = true;
-    } else {
-      this.game.player.onPlatform = false;
-    }
-    if (this.x + this.width < 0)
-      // check it off screen
-      this.markedForDeletion = true;
   }
   draw(context) {
     if (this.game.debug)

@@ -72,7 +72,13 @@ window.addEventListener("load", function () {
 
     // 게임 update
     update(deltaTime) {
-      // console.log(game.player.currentState);
+      // console.log(this.player.onGround());
+      // console.log(this.player.currentState.state);
+      // console.log(this.player.vy);
+      // console.log(this.player.onPlatform);
+      // console.log(this.platforms);
+      // console.log(this.enemies);
+
       // time setting
       this.time += deltaTime;
 
@@ -91,7 +97,6 @@ window.addEventListener("load", function () {
       // 배경, 플레이어 update
       this.background.update();
       this.player.update(this.input.keys, deltaTime);
-
       // 장애물 처리
       // enemyInterval 시간마다 장애물 추가해주기
       if (this.enemyTimer > this.enemyInterval) {
