@@ -32,7 +32,7 @@ class Field {
 }
 
 export class Field1 extends Field {
-  constructor(game, x) {
+  constructor(game, x, y) {
     // 부모 클래스 변수, 함수 사용가능
     super();
     this.game = game;
@@ -50,7 +50,8 @@ export class Field1 extends Field {
     this.minY = this.game.height - this.game.groundMargin;
     this.maxY = this.minY - 300;
     this.x = x;
-    this.y = Math.random() * (this.maxY - this.minY) + this.minY;
+    this.y = y ? y : Math.random() * (this.maxY - this.minY) + this.minY;
+    // this.y = ;
     this.speedX = 0;
     this.speedY = 0;
     this.maxFrame = 0;

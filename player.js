@@ -60,6 +60,9 @@ export class Player {
 
   // 플레이어 update
   update(input, deltaTime) {
+    // 낙하체크
+    this.checkFall();
+
     // 충돌 체크
     this.checkField();
     this.checkCollision();
@@ -85,14 +88,11 @@ export class Player {
 
     //  vy값을 변경한 후에 y값을 변경
     // y값 세팅 => 바닥에 안 닿을때까지 1더해주기
-    if (!this.onGround() && !this.onPlatform) this.vy += this.weight;
+    if (!this.onPlatform) this.vy += this.weight;
     this.y += this.vy;
 
     // 점프중x 바닥에 있을때 y값 세팅
-    if (this.onGround()) {
-      this.y = this.game.height - this.height - this.game.groundMargin;
-      this.vy = 0;
-    }
+
     // 캐릭터 sprite 애니메이션
     // frameX값을 추가해서 다음 캐릭터 모션을 읽어와서 draw
     if (this.frameTimer > this.frameInterval) {
@@ -121,11 +121,6 @@ export class Player {
       this.width,
       this.height
     );
-  }
-
-  // 바닥과 충돌 체크
-  onGround() {
-    return this.y >= this.game.height - this.height - this.game.groundMargin;
   }
 
   // state 설정
@@ -215,5 +210,12 @@ export class Player {
         }
       }
     });
+  }
+  checkFall() {
+    // 화면 밖으로 낙하한다면 게임 종료!
+    if (this.y > this.game.height) {
+      console.log("죽음");
+      this.game.gameOver = true;
+    }
   }
 }

@@ -20,7 +20,7 @@ window.addEventListener("load", function () {
       this.height = height;
 
       // 캐릭터와 땅 사이 거리(마진)
-      this.groundMargin = 260;
+      this.groundMargin = 360;
       this.speed = 0;
       this.maxSpeed = 6;
 
@@ -50,6 +50,9 @@ window.addEventListener("load", function () {
       this.initialPlatformX = this.player.x + this.player.width;
       // this.platforms.push(new Field1(this, initialPlatformX));
 
+      // 플레이어의 y값을 매개변수로 전달하여 첫 번째 발판 생성
+      this.addPlatform(this.player.y + 200);
+
       this.debug = false;
 
       // 점수
@@ -76,13 +79,6 @@ window.addEventListener("load", function () {
 
     // 게임 update
     update(deltaTime) {
-      // console.log(this.player.onGround());
-      // console.log(this.player.currentState.state);
-      // console.log(this.player.vy);
-      // console.log(this.player.onPlatform);
-      // console.log(this.platforms);
-      // console.log(this.enemies);
-
       // time setting
       this.time += deltaTime;
 
@@ -201,7 +197,7 @@ window.addEventListener("load", function () {
     }
 
     // 발판 추가
-    addPlatform() {
+    addPlatform(playerY) {
       const platformCount = Math.floor(Math.random() * 8) + 1; // 1개에서 4개 사이의 발판 개수 랜덤 설정
       // 마지막으로 생성된 발판 할당(23.06.19)
       let lastPlatform =
@@ -212,10 +208,12 @@ window.addEventListener("load", function () {
             null;
 
       for (let i = 0; i < platformCount; i++) {
-        const x = lastPlatform
-          ? lastPlatform.x + this.platformGap
-          : this.initialPlatformX; // 마지막으로 생성된 발판의 x 좌표 뒤에 새로운 발판 생성 또는 초기값으로 설정
-        this.platforms.push(new Field1(this, x));
+        const x = lastPlatform ? lastPlatform.x + this.platformGap : 0; // 마지막으로 생성된 발판의 x 좌표 뒤에 새로운 발판 생성 또는 초기값으로 설정
+
+        // 첫 번째 발판의 y값을 플레이어의 y값으로 설정
+        const firstY = i === 0 ? playerY : 0;
+
+        this.platforms.push(new Field1(this, x, firstY));
         lastPlatform = this.platforms[this.platforms.length - 1]; // 업데이트된 마지막 발판
       }
     }
