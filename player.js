@@ -10,6 +10,11 @@ import {
 import { CollisionAnimation } from "./collisionAnimation.js";
 import { FloatingMessages } from "./floatingMessages.js";
 
+const boomSound = new Audio("music/boom_sound.mp3");
+const coinSound = new Audio("music/coin_sound.mp3");
+const overSound = new Audio("music/game_over.mp3");
+const jumpSound = new Audio("music/jump_sound.mp3");
+
 export class Player {
   // 플레이어 기본 세팅
   constructor(game) {
@@ -88,7 +93,13 @@ export class Player {
 
     //  vy값을 변경한 후에 y값을 변경
     // y값 세팅 => 바닥에 안 닿을때까지 1더해주기
-    if (!this.onPlatform) this.vy += this.weight;
+    console.log(this.vy);
+    if (this.vy === -27) {
+      jumpSound.play();
+    }
+    if (!this.onPlatform) {
+      this.vy += this.weight;
+    }
     this.y += this.vy;
 
     // 점프중x 바닥에 있을때 y값 세팅
@@ -194,18 +205,23 @@ export class Player {
           this.currentState === this.states[4] ||
           this.currentState === this.states[5]
         ) {
+          coinSound.play();
           // 점수 증가, +1 메시지 띄우기
           this.game.score += 135;
+
           this.game.floatingMessages.push(
             new FloatingMessages("+1", enemy.x, enemy.y, 150, 50)
           );
+          // 효과음 재생
         }
         // 장애물과 충돌했을 때 아픈 모션 캐릭터 state로 교체
         // 점수, 생명 감소(생명이 0일때 게임 오버)
         else {
+          boomSound.play();
           this.setState(6, 0);
           this.game.score -= 5;
           this.game.lives--;
+
           if (this.game.lives <= 0) this.game.gameOver = true;
         }
       }
@@ -214,8 +230,8 @@ export class Player {
   checkFall() {
     // 화면 밖으로 낙하한다면 게임 종료!
     if (this.y > this.game.height) {
-      console.log("죽음");
       this.game.gameOver = true;
+      overSound.play();
     }
   }
 }

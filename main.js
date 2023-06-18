@@ -5,6 +5,9 @@ import { FlyingEnemy, Coin, ClimbingEnemy } from "./enemies.js";
 import { Field1 } from "./field.js";
 import { UI } from "./UI.js";
 
+const bgMusic = document.getElementById("bgMusic");
+const clearSound = new Audio("music/game_clear.mp3");
+
 // js 파일 로드될때 (게임 루프)
 window.addEventListener("load", function () {
   // 캔바스 설정
@@ -47,11 +50,10 @@ window.addEventListener("load", function () {
       this.platformGap = 400;
       this.platformTimer = 0;
       this.platformInterval = 1000;
-      this.initialPlatformX = this.player.x + this.player.width;
-      // this.platforms.push(new Field1(this, initialPlatformX));
+      this.initialPlatformX = 0;
 
       // 플레이어의 y값을 매개변수로 전달하여 첫 번째 발판 생성
-      this.addPlatform(this.player.y + 200);
+      this.addPlatform(this.player.y + 100);
 
       this.debug = false;
 
@@ -59,7 +61,7 @@ window.addEventListener("load", function () {
       this.score = 0;
       this.winningScore = 40;
       this.fontColor = "black";
-      this.winningMap = 3;
+      this.winningMap = 2;
 
       // 제한시간
       // 1000 1초
@@ -83,12 +85,15 @@ window.addEventListener("load", function () {
       this.time += deltaTime;
 
       // 제한시간 됐을 때 게임 오버
-      if (this.time > this.maxTime) this.gameOver = true;
+      if (this.time > this.maxTime) {
+        this.gameOver = true;
+      }
 
       // 맵이 끝났을 때 캐릭터가 도착 지점에 있으면 게임 클리어
       if (game.background.backgroundLayers[0].bgNum >= this.winningMap) {
         if (game.player.x >= this.width - 500) {
           this.gameClear = true;
+          clearSound.play();
         } else {
           this.gameOver = true;
         }
@@ -97,6 +102,7 @@ window.addEventListener("load", function () {
       // 배경, 플레이어 update
       this.background.update();
       this.player.update(this.input.keys, deltaTime);
+
       // 장애물 처리
       // enemyInterval 시간마다 장애물 추가해주기
       if (this.enemyTimer > this.enemyInterval) {
@@ -105,10 +111,12 @@ window.addEventListener("load", function () {
       } else {
         this.enemyTimer += deltaTime;
       }
+
       this.enemies.forEach((enemy) => {
         enemy.update(deltaTime);
-        if (enemy.markedForDeletion)
+        if (enemy.markedForDeletion) {
           this.enemies.splice(this.enemies.indexOf(enemy), 1);
+        }
       });
 
       // 발판 처리
@@ -124,8 +132,9 @@ window.addEventListener("load", function () {
         platform.update();
 
         // 발판 지워주기
-        if (platform.markedForDeletion)
+        if (platform.markedForDeletion) {
           this.platforms.splice(this.platforms.indexOf(platform), 1);
+        }
       });
 
       // 메시지 처리
@@ -136,7 +145,9 @@ window.addEventListener("load", function () {
       // 파티클 처리
       this.particles.forEach((particle, index) => {
         particle.update();
-        if (particle.markedForDeletion) this.particles.splice(index, 1);
+        if (particle.markedForDeletion) {
+          this.particles.splice(index, 1);
+        }
       });
       if (this.particles.length > this.maxParticles) {
         this.particles.length = this.maxParticles;
@@ -145,7 +156,9 @@ window.addEventListener("load", function () {
       // 충돌 처리
       this.collisions.forEach((collision, index) => {
         collision.update(deltaTime);
-        if (collision.markedForDeletion) this.collisions.splice(index, 1);
+        if (collision.markedForDeletion) {
+          this.collisions.splice(index, 1);
+        }
       });
 
       // 장애물, 발판, 파티클, 콜리션, 메시지 지워주기
@@ -189,10 +202,11 @@ window.addEventListener("load", function () {
     // 장애물 추가
     addEnemy() {
       // TODO : addCoin 메소드 따로 만들기
-      if (this.speed > 0 && Math.random() < 0.8)
+      if (this.speed > 0 && Math.random() < 0.8) {
         this.enemies.push(new Coin(this));
-      else if (this.speed > 0) this.enemies.push(new ClimbingEnemy(this));
-      this.enemies.push(new Coin(this));
+      } else if (this.speed > 0) {
+        this.enemies.push(new ClimbingEnemy(this));
+      }
       this.enemies.push(new FlyingEnemy(this));
     }
 
@@ -208,34 +222,48 @@ window.addEventListener("load", function () {
             null;
 
       for (let i = 0; i < platformCount; i++) {
-        const x = lastPlatform ? lastPlatform.x + this.platformGap : 0; // 마지막으로 생성된 발판의 x 좌표 뒤에 새로운 발판 생성 또는 초기값으로 설정
-
-        // 첫 번째 발판의 y값을 플레이어의 y값으로 설정
+        const x = lastPlatform
+          ? lastPlatform.x + this.platformGap
+          : this.initialPlatformX;
         const firstY = i === 0 ? playerY : 0;
 
         this.platforms.push(new Field1(this, x, firstY));
-        lastPlatform = this.platforms[this.platforms.length - 1]; // 업데이트된 마지막 발판
+        lastPlatform = this.platforms[this.platforms.length - 1];
       }
     }
   }
 
-  // game 객체 생성
+  // 게임 객체 생성
   const game = new Game(canvas.width, canvas.height);
   let lastTime = 0;
+
   function animate(timeStamp) {
     const deltaTime = timeStamp - lastTime;
     lastTime = timeStamp;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // update하고 게임 데이터 그려주기
+    // 게임 업데이트 및 그리기
     game.update(deltaTime);
     game.draw(ctx);
 
-    // 게임 오버 되거나 게임 클리어 되면 애니메이팅 종료
+    // 게임 오버 또는 게임 클리어 또는 다음 스테이지가 아니면 애니메이션 프레임 요청
     if (!game.gameOver && !game.gameClear && !game.nextStage) {
       requestAnimationFrame(animate);
+    } else {
+      // 노래 재생 중지
+      pauseBackgroundMusic();
     }
   }
-  // 그리기 시작
+
+  // 애니메이션 시작
   animate(0);
 });
+// 배경음악 일시 정지
+function pauseBackgroundMusic() {
+  bgMusic.pause();
+}
+
+// 배경음악 다시 재생
+function playBackgroundMusic() {
+  bgMusic.play();
+}
