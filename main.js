@@ -4,6 +4,7 @@ import { Background } from "./background.js";
 import { FlyingEnemy, Coin, ClimbingEnemy } from "./enemies.js";
 import { Field1 } from "./field.js";
 import { UI } from "./UI.js";
+import { Running } from "./playerState.js";
 
 const bgMusic = document.getElementById("bgMusic");
 const clearSound = new Audio("music/game_clear.mp3");
@@ -49,18 +50,18 @@ window.addEventListener("load", function () {
       // 발판 세팅
       this.platformGap = 400;
       this.platformTimer = 0;
-      this.platformInterval = 1000;
+      this.platformInterval = 2000;
       this.initialPlatformX = 0;
 
       // 플레이어의 y값을 매개변수로 전달하여 첫 번째 발판 생성
-      this.addPlatform(this.player.y + 100);
+      this.addPlatform(this.player.y + 100, true);
 
       this.debug = false;
 
       // 점수
       this.score = 0;
       this.winningScore = 40;
-      this.fontColor = "black";
+      this.fontColor = "white";
       this.winningMap = 2;
 
       // 제한시간
@@ -69,7 +70,7 @@ window.addEventListener("load", function () {
       this.maxTime = 80000;
       this.gameOver = false;
       this.gameClear = false;
-      this.lives = 5;
+      this.lives = 3;
 
       // 다음 스테이지
       this.nextStage = false;
@@ -81,6 +82,9 @@ window.addEventListener("load", function () {
 
     // 게임 update
     update(deltaTime) {
+      // console.log(this.enemies, this.enemies.length);
+      // console.log(this.platforms, this.platforms.length);
+
       // time setting
       this.time += deltaTime;
 
@@ -91,12 +95,13 @@ window.addEventListener("load", function () {
 
       // 맵이 끝났을 때 캐릭터가 도착 지점에 있으면 게임 클리어
       if (game.background.backgroundLayers[0].bgNum >= this.winningMap) {
-        if (game.player.x >= this.width - 500) {
+        if (this.player.onPlatform) {
           this.gameClear = true;
           clearSound.play();
-        } else {
-          this.gameOver = true;
         }
+        // else {
+        //   this.gameOver = true;
+        // }
       }
 
       // 배경, 플레이어 update
@@ -121,7 +126,10 @@ window.addEventListener("load", function () {
 
       // 발판 처리
       // platformInterval 시간마다 발판 추가해주기
-      if (this.platformTimer > this.platformInterval) {
+      if (
+        this.player.currentState !== this.player.states[0] &&
+        this.platformTimer > this.platformInterval
+      ) {
         this.addPlatform();
         this.platformTimer = 0;
       } else {
@@ -134,6 +142,7 @@ window.addEventListener("load", function () {
         // 발판 지워주기
         if (platform.markedForDeletion) {
           this.platforms.splice(this.platforms.indexOf(platform), 1);
+          console.log("지워짐");
         }
       });
 
@@ -211,8 +220,9 @@ window.addEventListener("load", function () {
     }
 
     // 발판 추가
-    addPlatform(playerY) {
-      const platformCount = Math.floor(Math.random() * 8) + 1; // 1개에서 4개 사이의 발판 개수 랜덤 설정
+    addPlatform(playerY, isGameStart = false, isGameEnd = false) {
+      // const platformCount = Math.floor(Math.random() * 8) + 1; // 1개에서 4개 사이의 발판 개수 랜덤 설정
+      const platformCount = 5;
       // 마지막으로 생성된 발판 할당(23.06.19)
       let lastPlatform =
         this.platforms.length > 0
@@ -226,9 +236,11 @@ window.addEventListener("load", function () {
           ? lastPlatform.x + this.platformGap
           : this.initialPlatformX;
         const firstY = i === 0 ? playerY : 0;
-
-        this.platforms.push(new Field1(this, x, firstY));
-        lastPlatform = this.platforms[this.platforms.length - 1];
+        const isStart = isGameStart && i === 0;
+        const isEnd = isGameEnd && i === platformCount - 1; // 마지막 발판인 경우 도착 발판 이미지로 설정
+        const newPlatform = new Field1(this, x, firstY, isStart, isEnd);
+        this.platforms.push(newPlatform);
+        lastPlatform = newPlatform;
       }
     }
   }

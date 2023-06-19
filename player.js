@@ -93,7 +93,7 @@ export class Player {
 
     //  vy값을 변경한 후에 y값을 변경
     // y값 세팅 => 바닥에 안 닿을때까지 1더해주기
-    console.log(this.vy);
+    // console.log(this.vy);
     if (this.vy === -27) {
       jumpSound.play();
     }

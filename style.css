@@ -24,6 +24,18 @@
 #shineAnimation,
 #lives,
 #next,
-#field1 {
+#field1,
+#field2,
+#time,
+#time_bar,
+#time_bar2,
+#stage1_clear,
+#stage1_over,
+#coin_bar {
   display: none;
+}
+
+@font-face {
+  font-family: "DungGeunMo";
+  src: url("font/DungGeunMo.ttf");
 }
