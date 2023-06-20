@@ -47,14 +47,24 @@ export class Field1 extends Field {
     this.isStart = isStart;
     this.isEnd = isEnd;
 
-    if (this.isStart || this.isEnd) {
+    if (this.isStart) {
       this.width = 275;
       this.height = 403;
-      this.image = document.getElementById("field2");
+      this.image = document.getElementById(
+        `field${this.game.currentMapIndex + 1}_2`
+      );
     } else {
-      this.width = 141;
-      this.height = 53;
-      this.image = document.getElementById("field1");
+      this.image = document.getElementById(
+        `field${this.game.currentMapIndex + 1}_1`
+      );
+
+      if (this.game.currentMapIndex === 1) {
+        this.width = 190;
+        this.height = 41;
+      } else {
+        this.width = 141;
+        this.height = 53;
+      }
     }
     // this.y = ;
     this.speedX = 0;

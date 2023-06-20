@@ -36,6 +36,8 @@ class Layer {
       this.height
     );
   }
+  // 맵 배경화면   설정
+  setMap(map) {}
 }
 
 export class Background {
@@ -45,9 +47,10 @@ export class Background {
     this.width = 5760;
     this.height = 1080;
 
-    // this.layer1image = document.getElementById("layer1");
-    // this.layer2image = document.getElementById("layer2");
-    this.layer3image = document.getElementById("layer3");
+    this.layer1image = document.getElementById(
+      `bg${this.game.currentMapIndex + 1}_1`
+    );
+
     // this.layer4image = document.getElementById("layer4");
     // this.layer5image = document.getElementById("layer5");
     // this.layer1 = new Layer(
@@ -64,12 +67,12 @@ export class Background {
     //   0.2,
     //   this.layer2image
     // );
-    this.layer3 = new Layer(
+    this.layer1 = new Layer(
       this.game,
       this.width,
       this.height,
       0.4,
-      this.layer3image
+      this.layer1image
     );
     // this.layer4 = new Layer(
     //   this.game,
@@ -86,22 +89,37 @@ export class Background {
     //   this.layer5image
     // );
     // 배경화면 요소 5개 동시에 배경으로 찍어주기
-    this.backgroundLayers = [
-      // this.layer1,
-      // this.layer2,
-      this.layer3,
+    this.background1Layers = [
+      this.layer1,
       // this.layer4,
       // this.layer5,
     ];
   }
+
+  // 배경화면 초기화
+  reset() {
+    this.background1Layers.forEach((layer) => {
+      layer.x = 0;
+      layer.bgNum = 1;
+      layer.image = document.getElementById(
+        `bg${this.game.currentMapIndex + 1}_1`
+      );
+    });
+  }
+
   update() {
-    this.backgroundLayers.forEach((layer) => {
+    this.background1Layers.forEach((layer) => {
       layer.update();
     });
   }
   draw(context) {
-    this.backgroundLayers.forEach((layer) => {
+    this.background1Layers.forEach((layer) => {
       layer.draw(context);
+    });
+  }
+  setMap(map) {
+    this.background1Layers.forEach((layer) => {
+      layer.setMap(map);
     });
   }
 }

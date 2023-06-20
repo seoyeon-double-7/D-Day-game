@@ -18,14 +18,43 @@ window.addEventListener("load", function () {
   canvas.width = 1920;
   canvas.height = 1080;
 
+  // 마우스 클릭 이벤트 처리
+  canvas.addEventListener("click", function (event) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+    console.log(mouseX, mouseY);
+    // 클릭한 위치가 이미지 영역 내에 있는지 확인
+    if (mouseX >= 583 && mouseX <= 736 && mouseY >= 500 && mouseY <= 550) {
+      console.log("home으로");
+    } else if (
+      mouseX >= 772 &&
+      mouseX <= 930 &&
+      mouseY >= 500 &&
+      mouseY <= 550
+    ) {
+      if (game.gameOver) {
+        this.nextStage = false;
+        console.log("다시하기");
+        // animate(0);
+        // game.reset();
+      } else if (game.nextStage) {
+        console.log("다음 맵으로!");
+        // game.reset();
+      }
+    }
+  });
+
   // 게임 클래스(기본 세팅)
   class Game {
     constructor(width, height) {
       this.width = width;
       this.height = height;
 
-      // 맵벼로 지형지물, 방향 다르게하기
-      this.map = ["morning", "afternoon", "dinner", "night"];
+      // TODO : 맵벼로 지형지물, 방향 다르게하기
+      // 현재 맵 인덱스와 맵 목록 설정
+      this.currentMapIndex = 0;
+      this.maps = ["morning", "afternoon", "dinner", "night"];
 
       // 캐릭터와 땅 사이 거리(마진)
       this.groundMargin = 200;
@@ -36,7 +65,7 @@ window.addEventListener("load", function () {
       this.background = new Background(this);
       this.player = new Player(this);
       this.input = new InputHandler(this);
-      this.UI = new UI(this);
+      this.ui = new UI(this);
 
       // 발판, 장애물, 충돌, 효과 이펙트 요소를 담을 배열
       this.platforms = [];
@@ -72,6 +101,8 @@ window.addEventListener("load", function () {
       // 1000 1초
       this.time = 0;
       this.maxTime = 80000;
+
+      // 게임 클리어, 오버 여부 초기화
       this.gameOver = false;
       this.gameClear = false;
       this.lives = 3;
@@ -82,6 +113,51 @@ window.addEventListener("load", function () {
       // 플레이어 상태
       this.player.currentState = this.player.states[0];
       this.player.currentState.enter();
+
+      // 게임 시작 시 첫번째 맵으로 설정
+      this.background.setMap(this.maps[this.currentMapIndex]);
+    }
+
+    reset() {
+      console.log("reset입니드~~");
+      if (this.currentMapIndex < this.maps.length - 1) {
+        this.nextStage = false;
+        this.currentMapIndex++;
+        // 게임 시작 시 첫번째 맵으로 설정
+        // this.background.setMap(this.maps[this.currentMapIndex]);
+        this.background.reset();
+        this.player.x = 0;
+        this.player.currentState = this.player.states[0];
+        this.player.currentState.enter();
+
+        this.platforms = [];
+        this.enemies = [];
+        this.particles = [];
+        this.collisions = [];
+        this.floatingMessages = [];
+
+        // 장애물 세팅
+        this.enemyTimer = 0;
+        this.platformTimer = 0;
+
+        // 플레이어의 y값을 매개변수로 전달하여 첫 번째 발판 생성
+        this.addPlatform(this.player.y + 100, true);
+
+        // 점수
+        // this.winningMap = 2;
+
+        // 제한시간
+        // 1000 1초
+        this.time = 0;
+        // this.maxTime = 80000;
+
+        // 게임 클리어, 오버 여부 초기화
+        // this.lives = 3;
+        // 플레이어 상태
+      } else {
+        // 모든 맵을 클리어한 경우 게임 종료 처리
+        this.gameOver = true;
+      }
     }
 
     // 게임 update
@@ -98,10 +174,12 @@ window.addEventListener("load", function () {
       }
 
       // 맵이 끝났을 때 캐릭터가 도착 지점에 있으면 게임 클리어
-      if (game.background.backgroundLayers[0].bgNum >= this.winningMap) {
+      if (game.background.background1Layers[0].bgNum >= this.winningMap) {
         if (this.player.onPlatform) {
-          this.gameClear = true;
+          // this.gameClear = true;
           clearSound.play();
+          this.reset();
+          // this.nextStage = true;
         }
         // else {
         //   this.gameOver = true;
@@ -212,7 +290,7 @@ window.addEventListener("load", function () {
       this.floatingMessages.forEach((message) => {
         message.draw(context);
       });
-      this.UI.draw(context);
+      this.ui.draw(context);
     }
 
     // 장애물 추가
@@ -238,6 +316,12 @@ window.addEventListener("load", function () {
             // lastPlatform.x를 참조하기 전에 오류를 방지
             null;
 
+      // 다음 맵으로 이동할 때 초기 발판 x 좌표 재조정
+      if (isGameStart && this.currentMapIndex > 0) {
+        console.log(this.platforms);
+        this.initialPlatformX = 0;
+      }
+
       for (let i = 0; i < platformCount; i++) {
         const x = lastPlatform
           ? lastPlatform.x + this.platformGap
@@ -250,6 +334,28 @@ window.addEventListener("load", function () {
         lastPlatform = newPlatform;
       }
     }
+
+    // 다음 맵으로 이동
+    // goToNextMap() {
+    //   //  맵 모두 깨지 않았을 때
+    //   if (this.currentMapIndex < this.maps.length - 1) {
+    //     this.currentMapIndex++;
+
+    //     // 배경 초기화
+    //     this.background.setMap(this.maps[this.currentMapIndex]);
+    //     this.gameClear = false;
+    //     this.player.reset(); // 캐릭터 위치 초기화
+    //     this.background.reset(); // 배경화면 초기화
+    //     this.platforms = []; // 발판 초기화
+    //     this.enemies = []; // 장애물 초기화
+    //     this.collisions = []; // 충돌 초기화
+    //     this.floatingMessages = []; // 플로팅 메시지 초기화
+    //     this.addPlatform(this.player.y + 100, true); // 새로운 발판 생성
+    //   } else {
+    //     // 모든 맵을 클리어한 경우 게임 종료 처리
+    //     this.gameOver = true;
+    //   }
+    // }
   }
 
   // 게임 객체 생성
@@ -276,25 +382,6 @@ window.addEventListener("load", function () {
 
   // 애니메이션 시작
   animate(0);
-
-  // 마우스 클릭 이벤트 처리
-  canvas.addEventListener("click", function (event) {
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-
-    // 클릭한 위치가 이미지 영역 내에 있는지 확인
-    if (
-      mouseX >= 100 &&
-      mouseX <= 100 + image.width &&
-      mouseY >= 100 &&
-      mouseY <= 100 + image.height
-    ) {
-      // 이미지를 클릭한 경우에 대한 액션을 수행
-      console.log("이미지를 클릭했습니다!");
-      // 여기에 원하는 액션을 추가하세요.
-    }
-  });
 });
 // 배경음악 일시 정지
 function pauseBackgroundMusic() {

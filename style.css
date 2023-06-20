@@ -14,8 +14,8 @@
   /* font-family: ; */
 }
 
-#player,
-#layer3,
+/* #player,
+#bg1_1,
 #enemy_fly,
 #coin,
 #enemy_ballon,
@@ -31,7 +31,8 @@
 #time_bar2,
 #stage1_clear,
 #stage1_over,
-#coin_bar {
+#coin_bar { */
+.game_img {
   display: none;
 }
 

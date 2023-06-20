@@ -4,14 +4,24 @@ export class UI {
     this.fontSize = 50;
     // font 써주기
     this.fontFamily = "DungGeunMo";
+
+    // default img
     this.livesImage = document.getElementById("lives");
-    this.nextImage = document.getElementById("next");
-    this.coinbarImage = document.getElementById("coin_bar");
     this.timeImage = document.getElementById("time");
     this.timebarImage = document.getElementById("time_bar");
     this.timebar2Image = document.getElementById("time_bar2");
-    this.over1Image = document.getElementById("stage1_over");
-    this.clear1Image = document.getElementById("stage1_clear");
+
+    // map별 img
+    this.coinbarImage = document.getElementById(
+      `coin_bar${this.game.currentMapIndex + 1}`
+    );
+    this.over1Image = document.getElementById(
+      `stage${this.game.currentMapIndex + 1}_over`
+    );
+    this.clear1Image = document.getElementById(
+      `stage${this.game.currentMapIndex + 1}_clear`
+    );
+
     this.quote = {
       contenst: [
         "삶이 있는 한 희망은 있다",
@@ -54,7 +64,7 @@ export class UI {
     context.fillText(this.game.score, 360, 82);
 
     // 남은시간 그려주기
-    context.drawImage(this.timeImage, 610, 45, 60, 75);
+    context.drawImage(this.timeImage, 620, 45, 60, 75);
     context.drawImage(this.timebar2Image, 673, 65, 710, 45);
     context.drawImage(
       this.timebarImage,
@@ -92,7 +102,7 @@ export class UI {
     context.textAlign = "center";
 
     // 게임 클리어했을 때
-    if (this.game.gameClear) {
+    if (this.game.nextStage) {
       context.drawImage(
         this.clear1Image,
         this.game.width * 0.5 - 430,

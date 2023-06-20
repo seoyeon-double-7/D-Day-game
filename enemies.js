@@ -73,7 +73,9 @@ export class FlyingEnemy extends Enemy {
     this.speedX = 0;
     this.speedY = 0;
     this.maxFrame = 0;
-    this.image = document.getElementById("enemy_fly");
+    this.image = document.getElementById(
+      `enemy${this.game.currentMapIndex + 1}_1`
+    );
     // 위아래로 움직일 y 좌표 세팅
     this.angle = 0;
     this.va = Math.random() * 0.1 + 0.1;
@@ -97,7 +99,7 @@ export class ClimbingEnemy extends Enemy {
     this.x = this.game.width + 180;
     // y값 random하게 설정
     this.y = Math.random() * this.game.height * 0.5;
-    this.image = document.getElementById("enemy_ballon");
+    this.image = document.getElementById("enemy1_2");
     this.speedX = 0;
     this.speedY = Math.random() > 0.5 ? 1 : -1;
     this.maxFrame = 0;
@@ -123,7 +125,9 @@ export class Coin extends Enemy {
     this.x = this.game.width;
     // TODO : 발판 값 불러와서 coin의 y값을 발판-10으로 세팅하기
     this.y = this.game.height - this.height - this.game.groundMargin - 100;
-    this.image = document.getElementById("coin");
+    this.image = document.getElementById(
+      `coin${this.game.currentMapIndex + 1}`
+    );
     this.speedX = 0;
     this.speedY = 0;
     this.isEnemy = false;

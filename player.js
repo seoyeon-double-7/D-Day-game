@@ -15,12 +15,15 @@ const coinSound = new Audio("music/coin_sound.mp3");
 const overSound = new Audio("music/game_over.mp3");
 const jumpSound = new Audio("music/jump_sound.mp3");
 const pangSound = new Audio("music/pang_sound.mp3");
-const running_sound = new Audio("music/running_sound.mp3");
+// const running_sound = new Audio("music/running_sound.mp3");
 export class Player {
   // 플레이어 기본 세팅
   constructor(game) {
     this.game = game;
-
+    this.reset();
+  }
+  // 플레이어 초기화
+  reset() {
     // 크기
     this.width = 100;
     this.height = 150;
@@ -35,7 +38,9 @@ export class Player {
     this.onPlatform = false;
 
     // 플레이어 이미지 불러오기 (점프)
-    this.image = document.getElementById("player");
+    this.image = document.getElementById(
+      `player${this.game.currentMapIndex + 1}`
+    );
 
     // gif 효과를 내기 위해 frame 설정
     this.frameX = 0;
@@ -66,9 +71,10 @@ export class Player {
 
   // 플레이어 update
   update(input, deltaTime) {
-    if (this.currentState !== this.states[1]) {
-      running_sound.play();
-    }
+    // if (this.currentState !== this.states[1]) {
+    //   running_sound.play();
+    //   running_sound.volume = 0.3;
+    // }
 
     // 낙하체크
     this.checkFall();
@@ -101,6 +107,7 @@ export class Player {
     // console.log(this.vy);
     if (this.vy === -27) {
       jumpSound.play();
+      jumpSound.volume = 0.5;
     }
     if (!this.onPlatform) {
       this.vy += this.weight;
