@@ -15,11 +15,11 @@ export class UI {
     this.quote = {
       contenst: [
         "삶이 있는 한 희망은 있다",
-        "시간을 지배할 줄 아는 사람은\n인생을 지배할 줄 아는 사람이다.",
-        "짧은 인생은 시간낭비에 의해\n더욱 짧아진다",
-        "그대의 하루하루를 그대의\n마지막 날이라고 생각하라.",
-        "소심하게 굴기에 인생은\n너무나 짧습니다.",
-        "희망과 근심 가운데 하루 하루를 마지막이라고 생각하라."
+        "시간을 지배할 줄 알면 인생을 지배할수있다.",
+        "짧은 인생은 시간낭비에 의해더 짧아진다",
+        "하루하루를 마지막 날이라고 생각하라.",
+        "소심하게 굴기에 인생은 짧습니다.",
+        "희망, 근심 속 하루를 마지막이라고 생각하라.",
       ],
       author: [
         "키케로",
@@ -27,10 +27,9 @@ export class UI {
         "S.존슨",
         "호라티우스",
         "카네기",
-        "호레스"
-      ]
-
-    }
+        "호레스",
+      ],
+    };
   }
   draw(context) {
     context.save();
@@ -55,14 +54,14 @@ export class UI {
     context.fillText(this.game.score, 360, 82);
 
     // 남은시간 그려주기
-    context.drawImage(this.timeImage, 600, 45, 60, 75);
+    context.drawImage(this.timeImage, 610, 45, 60, 75);
     context.drawImage(this.timebar2Image, 673, 65, 710, 45);
     context.drawImage(
       this.timebarImage,
       680,
       70,
       (this.game.maxTime / 1000 - (this.game.time / this.game.maxTime) * 100) *
-      8.75,
+        8.75,
       30
     );
     // 시간
@@ -96,23 +95,22 @@ export class UI {
     if (this.game.gameClear) {
       context.drawImage(
         this.clear1Image,
-        this.game.width * 0.5 - 400,
-        this.game.height * 0.5 - 300
+        this.game.width * 0.5 - 430,
+        this.game.height * 0.5 - 450
       );
       // 스코어
       context.font = 60 + "px " + this.fontFamily;
-      context.fillText(this.game.score, 1020, 580);
+      context.fillText(this.game.score, 1000, 567);
 
-      let qNum = parseInt(Math.random() * 5)
+      let qNum = parseInt(Math.random() * 5);
 
       // 명언 문구
       context.font = 30 + "px " + this.fontFamily;
-      context.fillText(this.quote.contenst[qNum], 900, 730);
+      context.fillText(this.quote.contenst[qNum], 995, 725);
       context.font = 28 + "px " + this.fontFamily;
 
       // 명언 인물
-      context.fillText(this.quote.author[qNum], 915, 775);
-
+      context.fillText(this.quote.author[qNum], 910, 770);
     }
 
     // 게임 오버했을 때
@@ -124,15 +122,20 @@ export class UI {
         this.game.width * 0.5 - 400,
         this.game.height * 0.5 - 300
       );
+      // context.fillStyle = "green";
+      // context.fillRect(720, 618, 212, 74);
+
+      // context.fillRect(932 + 20, 618, 212, 74);
+
       // 스코어
       context.font = 60 + "px " + this.fontFamily;
-      context.fillText(this.game.score, 1020, 580);
+      context.fillText(this.game.score, 1020, 575);
 
-      let qNum = parseInt(Math.random() * 5)
+      let qNum = parseInt(Math.random() * 5);
 
       // 명언 문구
       context.font = 30 + "px " + this.fontFamily;
-      context.fillText(this.quote.contenst[qNum], 900, 730);
+      context.fillText(this.quote.contenst[qNum], 995, 730);
       context.font = 28 + "px " + this.fontFamily;
 
       // 명언 인물

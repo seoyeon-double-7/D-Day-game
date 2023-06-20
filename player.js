@@ -14,7 +14,8 @@ const boomSound = new Audio("music/boom_sound.mp3");
 const coinSound = new Audio("music/coin_sound.mp3");
 const overSound = new Audio("music/game_over.mp3");
 const jumpSound = new Audio("music/jump_sound.mp3");
-
+const pangSound = new Audio("music/pang_sound.mp3");
+const running_sound = new Audio("music/running_sound.mp3");
 export class Player {
   // 플레이어 기본 세팅
   constructor(game) {
@@ -65,6 +66,10 @@ export class Player {
 
   // 플레이어 update
   update(input, deltaTime) {
+    if (this.currentState !== this.states[1]) {
+      running_sound.play();
+    }
+
     // 낙하체크
     this.checkFall();
 
@@ -181,6 +186,9 @@ export class Player {
         enemy.y + enemy.height > this.y
       ) {
         // 충돌된 enemy 개체 없애주기
+        !enemy.isEnemy && this.currentState === this.states[4]
+          ? pangSound.play()
+          : coinSound.play();
         enemy.markedForDeletion = true;
 
         // 충돌한 개체가 코인일 경우 / 장애물일 경우
@@ -205,7 +213,9 @@ export class Player {
           this.currentState === this.states[4] ||
           this.currentState === this.states[5]
         ) {
-          coinSound.play();
+          this.currentState === this.states[4]
+            ? pangSound.play()
+            : coinSound.play();
           // 점수 증가, +1 메시지 띄우기
           this.game.score += 135;
 

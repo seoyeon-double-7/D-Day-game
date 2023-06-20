@@ -8,6 +8,7 @@ import { Running } from "./playerState.js";
 
 const bgMusic = document.getElementById("bgMusic");
 const clearSound = new Audio("music/game_clear.mp3");
+const powerSound = new Audio("music/power_sound.mp3");
 
 // js 파일 로드될때 (게임 루프)
 window.addEventListener("load", function () {
@@ -109,6 +110,9 @@ window.addEventListener("load", function () {
 
       // 배경, 플레이어 update
       this.background.update();
+      if (this.input.keys.includes("Enter")) {
+        powerSound.play();
+      }
       this.player.update(this.input.keys, deltaTime);
 
       // 장애물 처리
@@ -267,12 +271,30 @@ window.addEventListener("load", function () {
     } else {
       // 노래 재생 중지
       pauseBackgroundMusic();
-      
     }
   }
 
   // 애니메이션 시작
   animate(0);
+
+  // 마우스 클릭 이벤트 처리
+  canvas.addEventListener("click", function (event) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    // 클릭한 위치가 이미지 영역 내에 있는지 확인
+    if (
+      mouseX >= 100 &&
+      mouseX <= 100 + image.width &&
+      mouseY >= 100 &&
+      mouseY <= 100 + image.height
+    ) {
+      // 이미지를 클릭한 경우에 대한 액션을 수행
+      console.log("이미지를 클릭했습니다!");
+      // 여기에 원하는 액션을 추가하세요.
+    }
+  });
 });
 // 배경음악 일시 정지
 function pauseBackgroundMusic() {

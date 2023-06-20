@@ -1,3 +1,5 @@
+const enemy1Sound = new Audio("music/boong_sound.mp3");
+
 class Enemy {
   // 장애물 기본 세팅
   constructor() {
@@ -78,6 +80,7 @@ export class FlyingEnemy extends Enemy {
   }
   update(deltaTime) {
     super.update(deltaTime);
+    enemy1Sound.play();
     // 캐릭터 y좌표 sin값으로 위아래로 둥둥 떠다니는 모션 구현
     this.angle += this.va;
     this.y += Math.sin(this.angle);
