@@ -23,8 +23,11 @@ window.addEventListener("load", function () {
       this.width = width;
       this.height = height;
 
+      // 맵벼로 지형지물, 방향 다르게하기
+      this.map = ["morning", "afternoon", "dinner", "night"];
+
       // 캐릭터와 땅 사이 거리(마진)
-      this.groundMargin = 360;
+      this.groundMargin = 200;
       this.speed = 0;
       this.maxSpeed = 6;
 
@@ -264,6 +267,7 @@ window.addEventListener("load", function () {
     } else {
       // 노래 재생 중지
       pauseBackgroundMusic();
+      
     }
   }
 

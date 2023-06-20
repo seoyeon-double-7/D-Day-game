@@ -12,6 +12,25 @@ export class UI {
     this.timebar2Image = document.getElementById("time_bar2");
     this.over1Image = document.getElementById("stage1_over");
     this.clear1Image = document.getElementById("stage1_clear");
+    this.quote = {
+      contenst: [
+        "삶이 있는 한 희망은 있다",
+        "시간을 지배할 줄 아는 사람은\n인생을 지배할 줄 아는 사람이다.",
+        "짧은 인생은 시간낭비에 의해\n더욱 짧아진다",
+        "그대의 하루하루를 그대의\n마지막 날이라고 생각하라.",
+        "소심하게 굴기에 인생은\n너무나 짧습니다.",
+        "희망과 근심 가운데 하루 하루를 마지막이라고 생각하라."
+      ],
+      author: [
+        "키케로",
+        "에센 바흐",
+        "S.존슨",
+        "호라티우스",
+        "카네기",
+        "호레스"
+      ]
+
+    }
   }
   draw(context) {
     context.save();
@@ -36,7 +55,6 @@ export class UI {
     context.fillText(this.game.score, 360, 82);
 
     // 남은시간 그려주기
-    // TODO : 남은 시간 계산해서 timer bar로 변경
     context.drawImage(this.timeImage, 600, 45, 60, 75);
     context.drawImage(this.timebar2Image, 673, 65, 710, 45);
     context.drawImage(
@@ -44,14 +62,15 @@ export class UI {
       680,
       70,
       (this.game.maxTime / 1000 - (this.game.time / this.game.maxTime) * 100) *
-        8.75,
+      8.75,
       30
     );
-    console.log(
-      (this.game.maxTime / 1000 -
-        parseInt((this.game.time / this.game.maxTime) * 100)) *
-        8.75
-    );
+    // 시간
+    // console.log(
+    //   (this.game.maxTime / 1000 -
+    //     parseInt((this.game.time / this.game.maxTime) * 100)) *
+    //     8.75
+    // );
     // context.fillText(
     //   (this.game.maxTime * 0.001 - this.game.time * 0.001).toFixed(1),
     //   710,
@@ -75,56 +94,49 @@ export class UI {
 
     // 게임 클리어했을 때
     if (this.game.gameClear) {
-      context.font = this.fontSize * 0.7 + "px " + this.fontFamily;
       context.drawImage(
         this.clear1Image,
-        this.game.width * 0.5,
-        this.game.height * 0.5
-      );
-      context.fillText(
-        "SCORE " + this.game.score,
-        this.game.width * 0.5,
-        this.game.height * 0.5 - 40
-      );
-      context.font = this.fontSize * 2 + "px " + this.fontFamily;
-
-      context.fillText(
-        "GAME CLEAR!",
-        this.game.width * 0.5,
-        this.game.height * 0.5 - 20
-      );
-      context.font = this.fontSize * 0.7 + "px " + this.fontFamily;
-
-      context.fillText(
-        "다음단계",
-        this.game.width * 0.5,
-        this.game.height * 0.5 + 20
-      );
-
-      context.drawImage(
-        this.nextImage,
         this.game.width * 0.5 - 400,
-        this.game.height * 0.5 - 300,
-        290,
-        124
+        this.game.height * 0.5 - 300
       );
+      // 스코어
+      context.font = 60 + "px " + this.fontFamily;
+      context.fillText(this.game.score, 1020, 580);
+
+      let qNum = parseInt(Math.random() * 5)
+
+      // 명언 문구
+      context.font = 30 + "px " + this.fontFamily;
+      context.fillText(this.quote.contenst[qNum], 900, 730);
+      context.font = 28 + "px " + this.fontFamily;
+
+      // 명언 인물
+      context.fillText(this.quote.author[qNum], 915, 775);
+
     }
 
     // 게임 오버했을 때
     else if (this.game.gameOver) {
-      context.font = this.fontSize * 2 + "px " + this.fontFamily;
+      // 게임 오버 이미지
+
       context.drawImage(
         this.over1Image,
         this.game.width * 0.5 - 400,
         this.game.height * 0.5 - 300
       );
-      // context.fillText("실패", this.game.width * 0.5, this.game.height * 0.5);
-      // context.font = this.fontSize * 0.7 + "px " + this.fontFamily;
-      // context.fillText(
-      //   "홈으로 가기",
-      //   this.game.width * 0.5,
-      //   this.game.height * 0.5 + 20
-      // );
+      // 스코어
+      context.font = 60 + "px " + this.fontFamily;
+      context.fillText(this.game.score, 1020, 580);
+
+      let qNum = parseInt(Math.random() * 5)
+
+      // 명언 문구
+      context.font = 30 + "px " + this.fontFamily;
+      context.fillText(this.quote.contenst[qNum], 900, 730);
+      context.font = 28 + "px " + this.fontFamily;
+
+      // 명언 인물
+      context.fillText(this.quote.author[qNum], 915, 775);
     }
     context.restore();
   }
