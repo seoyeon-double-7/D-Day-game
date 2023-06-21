@@ -121,7 +121,7 @@ window.addEventListener("load", function () {
       this.background.setMap(this.maps[this.currentMapIndex]);
     }
 
-    reset() {
+    gotoNextMap() {
       if (this.currentMapIndex < this.maps.length - 1) {
         this.nextStage = false;
         this.currentMapIndex++;
@@ -192,14 +192,14 @@ window.addEventListener("load", function () {
       // 제한시간 됐을 때 게임 오버
       if (this.time > this.maxTime) {
         this.gameOver = true;
+        overSound.play();
       }
 
       // 맵이 끝났을 때 캐릭터가 도착 지점에 있으면 게임 클리어
       if (game.background.background1Layers[1].bgNum >= this.winningMap) {
         if (this.player.onPlatform) {
-          // this.gameClear = true;
           clearSound.play();
-          this.reset();
+          this.gotoNextMap();
           // this.nextStage = true;
         }
         // else {
@@ -356,27 +356,45 @@ window.addEventListener("load", function () {
       }
     }
 
-    // 다음 맵으로 이동
-    // goToNextMap() {
-    //   //  맵 모두 깨지 않았을 때
-    //   if (this.currentMapIndex < this.maps.length - 1) {
-    //     this.currentMapIndex++;
+    reset(type) {
+      // 게임 시작 시 첫번째 맵으로 설정
+      // this.background.setMap(this.maps[this.currentMapIndex]);
+      this.background.reset();
+      this.player.reset();
 
-    //     // 배경 초기화
-    //     this.background.setMap(this.maps[this.currentMapIndex]);
-    //     this.gameClear = false;
-    //     this.player.reset(); // 캐릭터 위치 초기화
-    //     this.background.reset(); // 배경화면 초기화
-    //     this.platforms = []; // 발판 초기화
-    //     this.enemies = []; // 장애물 초기화
-    //     this.collisions = []; // 충돌 초기화
-    //     this.floatingMessages = []; // 플로팅 메시지 초기화
-    //     this.addPlatform(this.player.y + 100, true); // 새로운 발판 생성
-    //   } else {
-    //     // 모든 맵을 클리어한 경우 게임 종료 처리
-    //     this.gameOver = true;
-    //   }
-    // }
+      this.player.currentState = this.player.states[0];
+      this.player.currentState.enter();
+
+      this.platforms = [];
+      this.enemies = [];
+      this.particles = [];
+      this.collisions = [];
+      this.floatingMessages = [];
+
+      // 장애물 세팅
+      this.enemyTimer = 0;
+      this.platformTimer = 0;
+
+      // 플레이어의 y값을 매개변수로 전달하여 첫 번째 발판 생성
+      this.addPlatform(this.player.y + 100, true);
+
+      // 점수
+      // this.winningMap = 2;
+
+      // 제한시간
+      // 1000 1초
+      this.time = 0;
+      // this.maxTime = 80000;
+
+      // 게임 클리어, 오버 여부 초기화
+      // this.lives = 3;
+      // 플레이어 상태
+
+      // fall(0), again(1)
+      if (type === 0) {
+        this.lives -= 0;
+      } else this.lives = 3;
+    }
   }
 
   // 게임 객체 생성

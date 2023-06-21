@@ -239,7 +239,10 @@ export class Player {
           this.game.score -= 5;
           this.game.lives--;
 
-          if (this.game.lives <= 0) this.game.gameOver = true;
+          if (this.game.lives <= 0) {
+            this.game.gameOver = true;
+            overSound.play();
+          }
         }
       }
     });
@@ -247,8 +250,9 @@ export class Player {
   checkFall() {
     // 화면 밖으로 낙하한다면 게임 종료!
     if (this.y > this.game.height) {
-      this.game.gameOver = true;
-      overSound.play();
+      // this.game.gameOver = true;
+      this.game.reset(0);
+      // overSound.play();
     }
   }
 }
