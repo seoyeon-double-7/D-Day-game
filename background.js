@@ -13,11 +13,10 @@ class Layer {
   }
   update() {
     if (this.speedModifier === 0.4)
-      console.log(this.bgNum, this.x.toFixed(0), -this.frSize);
-    // 1920 맵 하나 넘어갈때 bgNum 1씩 증가시켜주기
-    if (this.x.toFixed(0) == -this.frSize) {
-      this.bgNum++;
-    }
+      if (this.x.toFixed(0) == -this.frSize) {
+        // 1920 맵 하나 넘어갈때 bgNum 1씩 증가시켜주기
+        this.bgNum++;
+      }
 
     // 전체 배경 하나가 넘어갈때 x좌표 0으로 세팅(배경 이여붙여주기 위함)
     if (this.x < -this.width) {
@@ -59,38 +58,33 @@ export class Background {
       0.2,
       this.layer1image
     );
-    if (this.game.currentMapIndex !== 2) {
-      this.layer2image = document.getElementById(
-        `bg${this.game.currentMapIndex + 1}_2`
-      );
-      this.layer3image = document.getElementById(
-        `bg${this.game.currentMapIndex + 1}_3`
-      );
-      this.layer2 = new Layer(
-        this.game,
-        this.width,
-        this.height,
-        0.4,
-        this.layer2image
-      );
-      this.layer3 = new Layer(
-        this.game,
-        this.width,
-        this.height,
-        0.1,
-        this.layer3image
-      );
+    this.layer2image = document.getElementById(
+      `bg${this.game.currentMapIndex + 1}_2`
+    );
+    this.layer3image = document.getElementById(
+      `bg${this.game.currentMapIndex + 1}_3`
+    );
+    this.layer2 = new Layer(
+      this.game,
+      this.width,
+      this.height,
+      0.4,
+      this.layer2image
+    );
+    this.layer3 = new Layer(
+      this.game,
+      this.width,
+      this.height,
+      0.1,
+      this.layer3image
+    );
 
-      // 배경화면 요소 5개 동시에 배경으로 찍어주기
-      this.background1Layers = [this.layer1, this.layer2, this.layer3];
-    } else {
-      this.background1Layers = [this.layer1];
-    }
+    // 배경화면 요소 5개 동시에 배경으로 찍어주기
+    this.background1Layers = [this.layer1, this.layer2, this.layer3];
   }
 
   // 배경화면 초기화
   reset() {
-    console.log(this.background1Layers);
     let cnt = 1;
     this.background1Layers.forEach((layer) => {
       layer.x = 0;

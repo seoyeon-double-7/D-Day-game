@@ -20,7 +20,20 @@ export class Dust extends Particle {
     this.y = y;
     this.speedX = Math.random();
     this.speedY = Math.random();
-    this.color = "#C1E6C9";
+    switch (this.game.currentMapIndex + 1) {
+      case 1:
+        this.color = "#C1E6C9";
+        break;
+      case 2:
+        this.color = "#BEE9FF";
+        break;
+      case 3:
+        this.color = "#A02941";
+        break;
+      case 4:
+        this.color = "#7C61A5";
+        break;
+    }
   }
   draw(context) {
     context.beginPath();

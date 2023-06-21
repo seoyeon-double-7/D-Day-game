@@ -11,6 +11,8 @@ let bgMusic3 = new Audio("music/bgMusic3.mp3");
 let bgMusic4 = new Audio("music/bgMusic4.mp3");
 const clearSound = new Audio("music/game_clear.mp3");
 const powerSound = new Audio("music/power_sound.mp3");
+const overSound = new Audio("music/game_over.mp3");
+
 // js 파일 로드될때 (게임 루프)
 
 window.addEventListener("load", function () {
@@ -26,24 +28,22 @@ window.addEventListener("load", function () {
     const mouseX = event.clientX - rect.left;
     const mouseY = event.clientY - rect.top;
     console.log(mouseX, mouseY);
-    // 클릭한 위치가 이미지 영역 내에 있는지 확인
-    if (mouseX >= 583 && mouseX <= 736 && mouseY >= 500 && mouseY <= 550) {
-      console.log("home으로");
-    } else if (
-      mouseX >= 772 &&
-      mouseX <= 930 &&
-      mouseY >= 500 &&
-      mouseY <= 550
+
+    // 홈으로
+    if (mouseX >= 725 && mouseX <= 925 && mouseY >= 630 && mouseY <= 690) {
+      var linkUrl = "http://localhost:3000";
+      // 현재 창에서 링크로 이동
+      window.location.href = linkUrl;
+    }
+
+    // 다시하기
+    else if (
+      mouseX >= 955 &&
+      mouseX <= 1155 &&
+      mouseY >= 630 &&
+      mouseY <= 690
     ) {
-      if (game.gameOver) {
-        this.nextStage = false;
-        console.log("다시하기");
-        // animate(0);
-        // game.reset();
-      } else if (game.nextStage) {
-        console.log("다음 맵으로!");
-        // game.reset();
-      }
+      location.reload();
     }
   });
 
@@ -95,7 +95,6 @@ window.addEventListener("load", function () {
 
       // 점수
       this.score = 0;
-      this.winningScore = 40;
       this.fontColor = "white";
       this.winningMap = 2;
 
@@ -109,8 +108,7 @@ window.addEventListener("load", function () {
       this.gameClear = false;
       this.lives = 3;
 
-      // 다음 스테이지
-      this.nextStage = false;
+      // 현재 맵 배경음악
       this.currentMusic = bgMusic;
 
       // 플레이어 상태
@@ -121,76 +119,18 @@ window.addEventListener("load", function () {
       this.background.setMap(this.maps[this.currentMapIndex]);
     }
 
-    gotoNextMap() {
-      if (this.currentMapIndex < this.maps.length - 1) {
-        this.nextStage = false;
-        this.currentMapIndex++;
-
-        this.currentMusic.pause();
-        switch (this.currentMapIndex + 1) {
-          case 2:
-            this.currentMusic = bgMusic2;
-            break;
-          case 3:
-            this.currentMusic = bgMusic3;
-            break;
-          case 4:
-            this.currentMusic = bgMusic4;
-
-          default:
-            break;
-        }
-        this.currentMusic.loop = true;
-        this.currentMusic.play();
-
-        // 게임 시작 시 첫번째 맵으로 설정
-        // this.background.setMap(this.maps[this.currentMapIndex]);
-        this.background.reset();
-        this.player.reset();
-
-        this.player.currentState = this.player.states[0];
-        this.player.currentState.enter();
-
-        this.platforms = [];
-        this.enemies = [];
-        this.particles = [];
-        this.collisions = [];
-        this.floatingMessages = [];
-
-        // 장애물 세팅
-        this.enemyTimer = 0;
-        this.platformTimer = 0;
-
-        // 플레이어의 y값을 매개변수로 전달하여 첫 번째 발판 생성
-        this.addPlatform(this.player.y + 100, true);
-
-        // 점수
-        // this.winningMap = 2;
-
-        // 제한시간
-        // 1000 1초
-        this.time = 0;
-        // this.maxTime = 80000;
-
-        // 게임 클리어, 오버 여부 초기화
-        // this.lives = 3;
-        // 플레이어 상태
-      } else {
-        // 모든 맵을 클리어한 경우 게임 종료 처리
-        this.gameOver = true;
-      }
-    }
-
     // 게임 update
     update(deltaTime) {
-      // console.log(this.enemies, this.enemies.length);
-      // console.log(this.platforms, this.platforms.length);
-
       // time setting
       this.time += deltaTime;
 
       // 제한시간 됐을 때 게임 오버
       if (this.time > this.maxTime) {
+        this.gameOver = true;
+        overSound.play();
+      }
+
+      if (this.lives <= 0) {
         this.gameOver = true;
         overSound.play();
       }
@@ -339,7 +279,7 @@ window.addEventListener("load", function () {
 
       // 다음 맵으로 이동할 때 초기 발판 x 좌표 재조정
       if (isGameStart && this.currentMapIndex > 0) {
-        console.log(this.platforms);
+        // console.log(this.platforms);
         this.initialPlatformX = 0;
       }
 
@@ -358,7 +298,6 @@ window.addEventListener("load", function () {
 
     reset(type) {
       // 게임 시작 시 첫번째 맵으로 설정
-      // this.background.setMap(this.maps[this.currentMapIndex]);
       this.background.reset();
       this.player.reset();
 
@@ -377,23 +316,74 @@ window.addEventListener("load", function () {
 
       // 플레이어의 y값을 매개변수로 전달하여 첫 번째 발판 생성
       this.addPlatform(this.player.y + 100, true);
-
-      // 점수
-      // this.winningMap = 2;
-
       // 제한시간
       // 1000 1초
       this.time = 0;
       // this.maxTime = 80000;
 
-      // 게임 클리어, 오버 여부 초기화
-      // this.lives = 3;
-      // 플레이어 상태
-
       // fall(0), again(1)
       if (type === 0) {
-        this.lives -= 0;
+        this.lives -= 1;
       } else this.lives = 3;
+    }
+
+    gotoNextMap() {
+      if (this.currentMapIndex < this.maps.length - 1) {
+        this.currentMapIndex++;
+
+        this.currentMusic.pause();
+        switch (this.currentMapIndex + 1) {
+          case 2:
+            this.currentMusic = bgMusic2;
+            break;
+          case 3:
+            this.currentMusic = bgMusic3;
+            break;
+          case 4:
+            this.currentMusic = bgMusic4;
+
+          default:
+            break;
+        }
+        this.currentMusic.loop = true;
+        this.currentMusic.play();
+
+        // 게임 시작 시 첫번째 맵으로 설정
+        // this.background.setMap(this.maps[this.currentMapIndex]);
+        this.background.reset();
+        this.player.reset();
+
+        this.player.currentState = this.player.states[0];
+        this.player.currentState.enter();
+
+        this.platforms = [];
+        this.enemies = [];
+        this.particles = [];
+        this.collisions = [];
+        this.floatingMessages = [];
+
+        // 장애물 세팅
+        this.enemyTimer = 0;
+        this.platformTimer = 0;
+
+        // 플레이어의 y값을 매개변수로 전달하여 첫 번째 발판 생성
+        this.addPlatform(this.player.y + 100, true);
+
+        // 점수
+        // this.winningMap = 2;
+
+        // 제한시간
+        // 1000 1초
+        this.time = 0;
+        this.maxTime = 80000 - this.currentMapIndex * 10000;
+
+        // 게임 클리어, 오버 여부 초기화
+        // this.lives = 3;
+        // 플레이어 상태
+      } else {
+        // 모든 맵을 클리어한 경우 게임 종료 처리
+        this.gameClear = true;
+      }
     }
   }
 

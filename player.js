@@ -12,10 +12,8 @@ import { FloatingMessages } from "./floatingMessages.js";
 
 const boomSound = new Audio("music/boom_sound.mp3");
 const coinSound = new Audio("music/coin_sound.mp3");
-const overSound = new Audio("music/game_over.mp3");
 const jumpSound = new Audio("music/jump_sound.mp3");
 const pangSound = new Audio("music/pang_sound.mp3");
-// const running_sound = new Audio("music/running_sound.mp3");
 export class Player {
   // 플레이어 기본 세팅
   constructor(game) {
@@ -71,11 +69,6 @@ export class Player {
 
   // 플레이어 update
   update(input, deltaTime) {
-    // if (this.currentState !== this.states[1]) {
-    //   running_sound.play();
-    //   running_sound.volume = 0.3;
-    // }
-
     // 낙하체크
     this.checkFall();
 
@@ -238,11 +231,6 @@ export class Player {
           this.setState(6, 0);
           this.game.score -= 5;
           this.game.lives--;
-
-          if (this.game.lives <= 0) {
-            this.game.gameOver = true;
-            overSound.play();
-          }
         }
       }
     });
@@ -250,9 +238,7 @@ export class Player {
   checkFall() {
     // 화면 밖으로 낙하한다면 게임 종료!
     if (this.y > this.game.height) {
-      // this.game.gameOver = true;
       this.game.reset(0);
-      // overSound.play();
     }
   }
 }
