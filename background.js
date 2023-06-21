@@ -12,6 +12,8 @@ class Layer {
     this.y = 0;
   }
   update() {
+    if (this.speedModifier === 0.4)
+      console.log(this.bgNum, this.x.toFixed(0), -this.frSize);
     // 1920 맵 하나 넘어갈때 bgNum 1씩 증가시켜주기
     if (this.x.toFixed(0) == -this.frSize) {
       this.bgNum++;
@@ -46,64 +48,57 @@ export class Background {
     this.game = game;
     this.width = 5760;
     this.height = 1080;
-
     this.layer1image = document.getElementById(
       `bg${this.game.currentMapIndex + 1}_1`
     );
 
-    // this.layer4image = document.getElementById("layer4");
-    // this.layer5image = document.getElementById("layer5");
-    // this.layer1 = new Layer(
-    //   this.game,
-    //   this.width,
-    //   this.height,
-    //   0,
-    //   this.layer1image
-    // );
-    // this.layer2 = new Layer(
-    //   this.game,
-    //   this.width,
-    //   this.height,
-    //   0.2,
-    //   this.layer2image
-    // );
     this.layer1 = new Layer(
       this.game,
       this.width,
       this.height,
-      0.4,
+      0.2,
       this.layer1image
     );
-    // this.layer4 = new Layer(
-    //   this.game,
-    //   this.width,
-    //   this.height,
-    //   0.8,
-    //   this.layer4image
-    // );
-    // this.layer5 = new Layer(
-    //   this.game,
-    //   this.width,
-    //   this.height,
-    //   1,
-    //   this.layer5image
-    // );
-    // 배경화면 요소 5개 동시에 배경으로 찍어주기
-    this.background1Layers = [
-      this.layer1,
-      // this.layer4,
-      // this.layer5,
-    ];
+    if (this.game.currentMapIndex !== 2) {
+      this.layer2image = document.getElementById(
+        `bg${this.game.currentMapIndex + 1}_2`
+      );
+      this.layer3image = document.getElementById(
+        `bg${this.game.currentMapIndex + 1}_3`
+      );
+      this.layer2 = new Layer(
+        this.game,
+        this.width,
+        this.height,
+        0.4,
+        this.layer2image
+      );
+      this.layer3 = new Layer(
+        this.game,
+        this.width,
+        this.height,
+        0.1,
+        this.layer3image
+      );
+
+      // 배경화면 요소 5개 동시에 배경으로 찍어주기
+      this.background1Layers = [this.layer1, this.layer2, this.layer3];
+    } else {
+      this.background1Layers = [this.layer1];
+    }
   }
 
   // 배경화면 초기화
   reset() {
+    console.log(this.background1Layers);
+    let cnt = 1;
     this.background1Layers.forEach((layer) => {
       layer.x = 0;
       layer.bgNum = 1;
       layer.image = document.getElementById(
-        `bg${this.game.currentMapIndex + 1}_1`
+        `bg${this.game.currentMapIndex + 1}_${cnt}`
       );
+      cnt += 1;
     });
   }
 

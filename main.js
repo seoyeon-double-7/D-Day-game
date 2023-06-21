@@ -4,13 +4,15 @@ import { Background } from "./background.js";
 import { FlyingEnemy, Coin, ClimbingEnemy } from "./enemies.js";
 import { Field1 } from "./field.js";
 import { UI } from "./UI.js";
-import { Running } from "./playerState.js";
 
-const bgMusic = document.getElementById("bgMusic");
+let bgMusic = new Audio("music/bgMusic1.mp3");
+let bgMusic2 = new Audio("music/bgMusic2.mp3");
+let bgMusic3 = new Audio("music/bgMusic3.mp3");
+let bgMusic4 = new Audio("music/bgMusic4.mp3");
 const clearSound = new Audio("music/game_clear.mp3");
 const powerSound = new Audio("music/power_sound.mp3");
-
 // js 파일 로드될때 (게임 루프)
+
 window.addEventListener("load", function () {
   // 캔바스 설정
   const canvas = document.getElementById("canvas1");
@@ -109,6 +111,7 @@ window.addEventListener("load", function () {
 
       // 다음 스테이지
       this.nextStage = false;
+      this.currentMusic = bgMusic;
 
       // 플레이어 상태
       this.player.currentState = this.player.states[0];
@@ -119,14 +122,32 @@ window.addEventListener("load", function () {
     }
 
     reset() {
-      console.log("reset입니드~~");
       if (this.currentMapIndex < this.maps.length - 1) {
         this.nextStage = false;
         this.currentMapIndex++;
+
+        this.currentMusic.pause();
+        switch (this.currentMapIndex + 1) {
+          case 2:
+            this.currentMusic = bgMusic2;
+            break;
+          case 3:
+            this.currentMusic = bgMusic3;
+            break;
+          case 4:
+            this.currentMusic = bgMusic4;
+
+          default:
+            break;
+        }
+        this.currentMusic.loop = true;
+        this.currentMusic.play();
+
         // 게임 시작 시 첫번째 맵으로 설정
         // this.background.setMap(this.maps[this.currentMapIndex]);
         this.background.reset();
-        this.player.x = 0;
+        this.player.reset();
+
         this.player.currentState = this.player.states[0];
         this.player.currentState.enter();
 
@@ -174,7 +195,7 @@ window.addEventListener("load", function () {
       }
 
       // 맵이 끝났을 때 캐릭터가 도착 지점에 있으면 게임 클리어
-      if (game.background.background1Layers[0].bgNum >= this.winningMap) {
+      if (game.background.background1Layers[1].bgNum >= this.winningMap) {
         if (this.player.onPlatform) {
           // this.gameClear = true;
           clearSound.play();
@@ -188,7 +209,7 @@ window.addEventListener("load", function () {
 
       // 배경, 플레이어 update
       this.background.update();
-      if (this.input.keys.includes("Enter")) {
+      if (this.input.keys.includes("Space")) {
         powerSound.play();
       }
       this.player.update(this.input.keys, deltaTime);
@@ -362,6 +383,9 @@ window.addEventListener("load", function () {
   const game = new Game(canvas.width, canvas.height);
   let lastTime = 0;
 
+  bgMusic.loop = true;
+  bgMusic.play();
+
   function animate(timeStamp) {
     const deltaTime = timeStamp - lastTime;
     lastTime = timeStamp;
@@ -376,7 +400,7 @@ window.addEventListener("load", function () {
       requestAnimationFrame(animate);
     } else {
       // 노래 재생 중지
-      pauseBackgroundMusic();
+      pauseBackgroundMusic(game.currentMusic);
     }
   }
 
@@ -384,11 +408,6 @@ window.addEventListener("load", function () {
   animate(0);
 });
 // 배경음악 일시 정지
-function pauseBackgroundMusic() {
+function pauseBackgroundMusic(bgMusic) {
   bgMusic.pause();
-}
-
-// 배경음악 다시 재생
-function playBackgroundMusic() {
-  bgMusic.play();
 }

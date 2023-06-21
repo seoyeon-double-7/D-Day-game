@@ -193,9 +193,9 @@ export class Player {
         enemy.y + enemy.height > this.y
       ) {
         // 충돌된 enemy 개체 없애주기
-        !enemy.isEnemy && this.currentState === this.states[4]
-          ? pangSound.play()
-          : coinSound.play();
+        // !enemy.isEnemy && this.currentState === this.states[4]
+        //   ? pangSound.play()
+        //   : coinSound.play();
         enemy.markedForDeletion = true;
 
         // 충돌한 개체가 코인일 경우 / 장애물일 경우

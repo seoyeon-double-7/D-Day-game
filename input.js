@@ -5,14 +5,14 @@ export class InputHandler {
     this.keys = [];
     window.addEventListener("keydown", (e) => {
       if (
-        (e.key === "ArrowDown" ||
-          e.key === "ArrowUp" ||
-          e.key === "ArrowRight" ||
-          e.key === "ArrowLeft" ||
-          e.key === "Enter") &&
+        (e.code === "ArrowDown" ||
+          e.code === "ArrowUp" ||
+          e.code === "ArrowRight" ||
+          e.code === "ArrowLeft" ||
+          e.code === "Space") &&
         this.keys.indexOf(e.key) === -1
       ) {
-        this.keys.push(e.key);
+        this.keys.push(e.code);
       }
       // 디버그 모드
       else if (e.key === "d") {
@@ -21,13 +21,13 @@ export class InputHandler {
     });
     window.addEventListener("keyup", (e) => {
       if (
-        e.key === "ArrowDown" ||
-        e.key === "ArrowUp" ||
-        e.key === "ArrowRight" ||
-        e.key === "ArrowLeft" ||
-        e.key === "Enter"
+        e.code === "ArrowDown" ||
+        e.code === "ArrowUp" ||
+        e.code === "ArrowRight" ||
+        e.code === "ArrowLeft" ||
+        e.code === "Space"
       ) {
-        this.keys.splice(this.keys.indexOf(e.key), 1);
+        this.keys.splice(this.keys.indexOf(e.code), 1);
       }
     });
   }

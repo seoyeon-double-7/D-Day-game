@@ -37,7 +37,7 @@ export class Sitting extends State {
       this.game.player.setState(states.RUNNING, 1);
     }
     // 엔터 눌렀을 때 rolling state로 바꿔주기
-    else if (input.includes("Enter")) {
+    else if (input.includes("Space")) {
       this.game.player.setState(states.ROLLING, 1);
     }
   }
@@ -75,7 +75,7 @@ export class Running extends State {
     }
     // 엔터 눌렀을 때 rolling state로 바꿔주기
     // TODO : 무적일때만 실행하게
-    else if (input.includes("Enter")) {
+    else if (input.includes("Space")) {
       this.game.player.setState(states.ROLLING, 1);
     }
   }
@@ -105,7 +105,7 @@ export class Jumping extends State {
       this.game.player.setState(states.FALLING, 1);
     }
     // 엔터 눌렀을때 roling state(무적)
-    else if (input.includes("Enter")) {
+    else if (input.includes("Space")) {
       this.game.player.setState(states.ROLLING, 1);
     }
     // 다운키 눌렀을 때 diving state(밑으로 가라앉기)
@@ -162,16 +162,16 @@ export class Rolling extends State {
     );
 
     // 엔터 안누르고 바닥이나 발판에 있으면 Running state로
-    if (!input.includes("Enter") && this.game.player.onPlatform) {
+    if (!input.includes("Space") && this.game.player.onPlatform) {
       this.game.player.setState(states.RUNNING, 1);
     }
     // 엔터 안누르고 바닥이나 발판에 없으면 FALLING state로
-    else if (!input.includes("Enter") && !this.game.player.onPlatform) {
+    else if (!input.includes("Space") && !this.game.player.onPlatform) {
       this.game.player.setState(states.FALLING, 1);
     }
     // 엔터, 업키 누르고 바닥이나 발판에 있으면 vy -=27
     else if (
-      input.includes("Enter") &&
+      input.includes("Space") &&
       input.includes("ArrowUp") &&
       this.game.player.onPlatform
     ) {
@@ -216,7 +216,7 @@ export class Diving extends State {
           )
         );
       }
-    } else if (input.includes("Enter") && !this.game.player.onPlatform) {
+    } else if (input.includes("Space") && !this.game.player.onPlatform) {
       this.game.player.setState(states.ROLLING, 2);
     }
   }
