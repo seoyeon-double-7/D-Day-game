@@ -29,8 +29,9 @@ d-day 게임용 리포지토리
 * 점프 : ↑
 * 멈추기 : ↓
 * 장애물 없애기 : Space + ← / → / ↑ (스페이스바와 함께 눌러요)
+<br/>
 
-<img src="https://github.com/seoyeon-double-7/D-Day-game/assets/83990943/9fc48233-6d30-4e18-83f1-02dcd6c671fd.jpg" width="365" height="1200"/>
+<img src="https://github.com/seoyeon-double-7/D-Day-game/assets/83990943/b580ec4f-4093-44a0-9c9e-0a46a155127e.png" width="350" height="1200"/>
 
 
 <br/>
